@@ -780,10 +780,22 @@
     </div>
 
     <p>
-      いよいよメインの作業です！CLAUDE.mdを作ることで、Claudeがあなたの団体を「覚えて」くれます。
+      いよいよメインの作業です！ここは<strong>全部Claude Codeに話しかけるだけ</strong>で完結します。
+      メモ帳を開いたり、ファイルを手で作ったりする必要はありません。
     </p>
 
-    <h3>CLAUDE.mdファイルの作り方</h3>
+    <div class="callout callout-success">
+      <div class="callout-icon">🎉</div>
+      <div class="callout-body">
+        <div class="callout-title">この章のポイント</div>
+        <p class="callout-text">
+          フォルダの作成・ファイルの作成・内容の記入まで、<strong>全てClaude Codeへの一言で自動でやってくれます。</strong><br>
+          次のプロンプトをコピーして貼り付けるだけでOKです！
+        </p>
+      </div>
+    </div>
+
+    <h3>手順① Claude Codeを開いて作業場所を決める</h3>
 
     <ul class="step-list">
       <li class="step-item">
@@ -792,9 +804,10 @@
           <div class="step-num-line"></div>
         </div>
         <div class="step-body">
-          <div class="step-title">作業フォルダを開く</div>
+          <div class="step-title">Claude Codeのアプリを起動する</div>
           <div class="step-desc">
-            先ほど選んだ作業フォルダ（例：「NPO業務」フォルダ）をエクスプローラーまたはFinderで開きます。
+            インストール済みのClaudeデスクトップアプリを開きます。<br>
+            左側に「フォルダを選択」または「Open Folder」というボタンがあります。
           </div>
         </div>
       </li>
@@ -804,83 +817,116 @@
           <div class="step-num-line"></div>
         </div>
         <div class="step-body">
-          <div class="step-title">「CLAUDE.md」という名前でファイルを作る</div>
+          <div class="step-title">デスクトップを選択する</div>
           <div class="step-desc">
-            メモ帳（Windows）またはテキストエディット（Mac）を開き、<br>
-            名前を <strong>「CLAUDE.md」</strong>（大文字・拡張子含む）として保存します。<br>
-            <span style="color: var(--danger); font-size: 13px;">⚠ 「CLAUDE.txt」ではなく「CLAUDE.md」にしてください</span>
-          </div>
-        </div>
-      </li>
-      <li class="step-item">
-        <div class="step-num">
-          <div class="step-num-circle">3</div>
-          <div class="step-num-line"></div>
-        </div>
-        <div class="step-body">
-          <div class="step-title">内容を書く</div>
-          <div class="step-desc">
-            次のセクションのテンプレートを参考に、あなたの団体の情報を書き込みます。<br>
-            難しく考えず、「AIへのメモ書き」くらいの気持ちで書いてOKです。
-          </div>
-        </div>
-      </li>
-      <li class="step-item">
-        <div class="step-num">
-          <div class="step-num-circle">4</div>
-          <div class="step-num-line"></div>
-        </div>
-        <div class="step-body">
-          <div class="step-title">Claude Codeから確認する</div>
-          <div class="step-desc">
-            Claude Codeアプリで同じフォルダを開き、「CLAUDE.mdを読んで、私の団体について教えて」と入力してみましょう。
-            正しく読み込まれていれば、団体の情報を答えてくれます。
+            フォルダ選択画面で<strong>「デスクトップ」</strong>を選んでOKを押します。<br>
+            ここが作業の起点になります。フォルダ作成はClaudeに任せるので、今はデスクトップだけ選べばOKです。
           </div>
         </div>
       </li>
     </ul>
 
-    <div class="callout callout-warn">
-      <div class="callout-icon">⚠️</div>
+    <h3>手順② 下のプロンプトをコピーしてClaudeに貼り付ける</h3>
+
+    <p>以下の文章をそのままコピーして、Claude Codeのチャット欄に貼り付けて送信してください。</p>
+
+    <div class="code-wrap">
+      <div class="code-block">
+        <div class="code-label">💬 Claude Codeに貼り付けるプロンプト</div>
+        <button class="copy-btn" onclick="copySetupPrompt()">📋 コピー</button>
+        <pre style="white-space: pre-wrap;">デスクトップに「NPO業務」というフォルダを作ってください。
+その中に以下のサブフォルダも作ってください：
+- 議事録
+- 申請書
+- SNS投稿
+- ニュースレター
+
+そして「NPO業務」フォルダの中に CLAUDE.md というファイルを作り、
+以下の内容を書いてください。【】の部分は私が後で教えるので、
+いったん空欄（「未記入」）にしておいてください。
+
+---
+# 私の団体について（AIへの説明）
+
+## 基本情報
+- 団体名：【未記入】
+- 設立年：【未記入】
+- 所在地：【未記入】
+- スタッフ数：【未記入】
+
+## ミッション・活動内容
+【未記入】
+
+## よく使う言葉・キーワード
+- 【未記入】
+
+## 文章のルール
+- 文体：です・ます調
+- 語り口：温かみがあり、専門用語は避けてわかりやすく
+- 避けるべき表現：否定的なレッテル表現（「弱者」「問題児」など）
+- 文字数の目安：SNS投稿は200文字以内、報告書は400〜800字程度
+
+## よく作る文書の種類
+- 助成金申請書の下書き
+- 月次ニュースレター（支援者向け）
+- 活動報告書
+- SNS投稿文（Facebook・Instagram）
+- 議事録の整理
+
+## 注意事項（必ずこれを守ってください）
+- 個人情報（利用者の名前・住所等）は文書に含めない
+- 金額・数字は必ず私が確認するまで確定しない
+- 不確かな情報は「要確認」と明示する
+
+## 担当者について
+- 私の役職：【未記入】
+- AIに期待すること：下書きの作成・アイデア出し・文書の校正
+---
+
+フォルダとファイルを作り終えたら「完成しました！」と教えてください。</pre>
+      </div>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">⏳</div>
       <div class="callout-body">
-        <div class="callout-title">ファイル名の注意点</div>
+        <div class="callout-title">Claudeが自動でやってくれること</div>
         <p class="callout-text">
-          ファイル名は必ず <strong>CLAUDE.md</strong>（すべて大文字）にしてください。<br>
-          小文字の「claude.md」でも動作しますが、大文字が推奨されています。<br>
-          また、フォルダの直下（一番上の階層）に置くことが重要です。
+          ✅ 「NPO業務」フォルダの作成<br>
+          ✅ 「議事録」「申請書」「SNS投稿」「ニュースレター」サブフォルダの作成<br>
+          ✅ CLAUDE.mdファイルの作成と内容の記入<br><br>
+          「完成しました！」と返ってきたら次のステップへ進みましょう。
         </p>
       </div>
     </div>
 
-    <h3>CLAUDE.mdに書くべき4つの内容</h3>
+    <h3>手順③ 団体の情報を教えてCLAUDE.mdを完成させる</h3>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
-      <div style="background: var(--primary-light); border-radius: 10px; padding: 18px;">
-        <div style="font-size: 22px; margin-bottom: 8px;">🏢</div>
-        <strong style="font-size: 14px; color: var(--primary-dark);">① 団体プロフィール</strong>
-        <p style="font-size: 13px; margin: 8px 0 0; color: var(--text-light);">
-          団体名・設立年・ミッション・主な事業・対象者
-        </p>
+    <p>Claudeが「完成しました！」と返したら、今度は団体の情報を教えます。以下のように話しかけてください。</p>
+
+    <div class="code-wrap">
+      <div class="code-block">
+        <div class="code-label">💬 続けてClaudeに送るメッセージ（【】を自分の情報に変えて送る）</div>
+        <button class="copy-btn" onclick="copyInfoPrompt()">📋 コピー</button>
+        <pre style="white-space: pre-wrap;">CLAUDE.mdの【未記入】の部分を以下の情報で埋めてください。
+
+- 団体名：【例：NPO法人〇〇〇〇】
+- 設立年：【例：2015年】
+- 所在地：【例：東京都〇〇区】
+- スタッフ数：【例：常勤3名、非常勤5名、ボランティア20名程度】
+- ミッション・活動内容：【例：子どもの貧困問題に取り組み、学習支援と食事支援を行っています】
+- よく使う言葉：【例：「居場所」「伴走支援」「当事者目線」】
+- 私の役職：【例：事務局長】</pre>
       </div>
-      <div style="background: #FFF8E1; border-radius: 10px; padding: 18px;">
-        <div style="font-size: 22px; margin-bottom: 8px;">✍️</div>
-        <strong style="font-size: 14px; color: #92400E;">② 文章のルール</strong>
-        <p style="font-size: 13px; margin: 8px 0 0; color: var(--text-light);">
-          使う言葉・使わない言葉・文体（丁寧語か？）・文字数の目安
-        </p>
-      </div>
-      <div style="background: var(--success-light); border-radius: 10px; padding: 18px;">
-        <div style="font-size: 22px; margin-bottom: 8px;">⚡</div>
-        <strong style="font-size: 14px; color: #065F46;">③ よくある依頼</strong>
-        <p style="font-size: 13px; margin: 8px 0 0; color: var(--text-light);">
-          報告書・ニュースレター・SNS投稿など、よく作る文書の型
-        </p>
-      </div>
-      <div style="background: var(--danger-light); border-radius: 10px; padding: 18px;">
-        <div style="font-size: 22px; margin-bottom: 8px;">🚫</div>
-        <strong style="font-size: 14px; color: #C0392B;">④ 禁止事項・注意点</strong>
-        <p style="font-size: 13px; margin: 8px 0 0; color: var(--text-light);">
-          個人情報の扱い・書いてはいけないこと・確認が必要な事項
+    </div>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <div class="callout-title">確認方法</div>
+        <p class="callout-text">
+          CLAUDE.mdが完成したら、「CLAUDE.mdを読んで、私の団体について3行でまとめて」と入力してみましょう。<br>
+          あなたの団体の情報をきちんと把握して答えてくれたらセットアップ完了です！
         </p>
       </div>
     </div>
@@ -890,106 +936,67 @@
   <div class="section" id="sec-npo-template">
     <div class="section-header">
       <span class="section-number">6</span>
-      <h2>NPO向けCLAUDE.mdテンプレート</h2>
+      <h2>うまく伝えられない時はこう言おう</h2>
     </div>
 
     <p>
-      以下のテンプレートをコピーして、<strong>【　】の部分をあなたの団体の情報に書き換えてください。</strong>
-      書き換えたものをCLAUDE.mdとして保存するだけでOKです。
+      「団体のことを説明するのが難しい…」という方も安心してください。<br>
+      Claudeに箇条書きでざっくり話すだけで、CLAUDE.mdを整えてくれます。
     </p>
+
+    <h3>こんな風に話してみよう</h3>
 
     <div class="code-wrap">
       <div class="code-block">
-        <div class="code-label">📄 CLAUDE.md テンプレート（コピーしてお使いください）</div>
-        <button class="copy-btn" onclick="copyTemplate()">📋 コピー</button>
-        <pre>
-<span class="heading"># 私の団体について（AIへの説明）</span>
+        <div class="code-label">💬 例：こんな感じで伝えてOK</div>
+        <pre style="white-space: pre-wrap;">うちの団体についてざっくり教えます。
+CLAUDE.mdをいい感じに整えてください。
 
-<span class="heading">## 基本情報</span>
-- <span class="key">団体名</span>：<span class="val">【NPO法人〇〇〇〇】</span>
-- <span class="key">設立年</span>：<span class="val">【〇〇〇〇年】</span>
-- <span class="key">所在地</span>：<span class="val">【〇〇県〇〇市】</span>
-- <span class="key">スタッフ数</span>：<span class="val">【常勤〇名、非常勤〇名、ボランティア〇名程度】</span>
-
-<span class="heading">## ミッション・活動内容</span>
-<span class="val">【私たちは〇〇を目指し、〇〇な活動をしています。
-主な対象者は〇〇で、〇〇などの事業を行っています。】</span>
-
-<span class="heading">## よく使う言葉・キーワード</span>
-- <span class="val">【例：「伴走支援」「当事者目線」「地域共生」など】</span>
-
-<span class="heading">## 文章のルール</span>
-- 文体：<span class="val">【丁寧語（です・ます調）】</span>
-- 語り口：<span class="val">【温かみがあり、専門用語は避けてわかりやすく】</span>
-- 避けるべき表現：<span class="val">【例：「弱者」「問題児」など否定的なレッテル表現】</span>
-- 文字数の目安：<span class="val">【SNS投稿は200文字以内、報告書は400〜800字程度】</span>
-
-<span class="heading">## よく作る文書の種類</span>
-- 助成金申請書の下書き
-- 月次ニュースレター（支援者向け）
-- 活動報告書
-- SNS投稿文（Facebook・Instagram）
-- 議事録の整理
-
-<span class="heading">## 注意事項（必ずこれを守ってください）</span>
-- 個人情報（利用者の名前・住所等）は文書に含めない
-- 金額・数字は必ず私が確認するまで確定しない
-- 助成金名・法人名は正式名称を使う
-- 不確かな情報は「要確認」と明示する
-
-<span class="heading">## 担当者について</span>
-- 私の役職：<span class="val">【事務局長 / 〇〇担当スタッフ】</span>
-- 私の得意・不得意：<span class="val">【文書作成は得意、数字の整理が苦手】</span>
-- AIに期待すること：<span class="val">【下書きの作成・アイデア出し・文書の校正】</span>
-        </pre>
+・子どもの支援をしています
+・対象は小学生から高校生
+・学習支援と食事の提供が主な活動
+・スタッフは5人くらい、ボランティアが20人くらい
+・文章は保護者向けにやさしく書きたい
+・「居場所」「伴走支援」という言葉をよく使います</pre>
       </div>
     </div>
 
-    <h3>書き換えのヒント</h3>
-
     <div class="callout callout-info">
-      <div class="callout-icon">💬</div>
+      <div class="callout-icon">💡</div>
       <div class="callout-body">
-        <div class="callout-title">うまく書けない場合は、Claudeに聞いてみよう！</div>
+        <div class="callout-title">完璧に書かなくて大丈夫</div>
         <p class="callout-text">
-          Claudeに「私の団体はこんな団体です：〇〇〇〇。これをCLAUDE.md用に整理してください」と伝えると、
-          CLAUDE.mdの文章を自動で作ってくれます。最初から完璧に書く必要はありません。
+          CLAUDE.mdは「育てるもの」です。最初は3行でも大丈夫。<br>
+          使いながら「こう書いたほうがよかった」と気づいたら、<br>
+          「CLAUDE.mdの〇〇の部分を△△に直して」とClaudeに頼むだけで更新できます。
         </p>
       </div>
     </div>
 
-    <h3>記入例（子ども支援系NPOの場合）</h3>
+    <h3>フォルダ構成の確認方法</h3>
+    <p>セクション5の手順が完了すると、デスクトップにこんな構成ができています。</p>
 
-    <div class="code-wrap">
-      <div class="code-block">
-        <div class="code-label">📝 記入例（参考）</div>
-        <pre>
-<span class="heading"># 私の団体について（AIへの説明）</span>
+    <div class="code-block" style="margin: 0;">
+      <div class="code-label">📁 完成後のフォルダ構成</div>
+      <pre>
+デスクトップ/
+└── <span class="heading">NPO業務/</span>
+    ├── <span class="key">CLAUDE.md</span>        ← Claudeが読む「説明書」
+    ├── <span class="val">議事録/</span>          ← 会議メモを保存
+    ├── <span class="val">申請書/</span>          ← 助成金の下書きを保存
+    ├── <span class="val">SNS投稿/</span>         ← 投稿文の下書きを保存
+    └── <span class="val">ニュースレター/</span>   ← ニュースレターの下書きを保存
+      </pre>
+    </div>
 
-<span class="heading">## 基本情報</span>
-- <span class="key">団体名</span>：NPO法人こどもサポートセンター〇〇
-- <span class="key">設立年</span>：2015年
-- <span class="key">所在地</span>：東京都〇〇区
-- <span class="key">スタッフ数</span>：常勤3名、非常勤5名、ボランティア30名程度
-
-<span class="heading">## ミッション・活動内容</span>
-すべての子どもが安心して育てる地域社会を目指しています。
-主な対象は経済的困難を抱える家庭の子ども（小〜高校生）で、
-学習支援・食事支援・居場所づくりを行っています。
-
-<span class="heading">## よく使う言葉・キーワード</span>
-- 「子どもの貧困」「居場所」「食育」「無料塾」「学習支援」
-
-<span class="heading">## 文章のルール</span>
-- 文体：です・ます調
-- 語り口：温かく、保護者や地域の方に伝わるわかりやすい言葉で
-- 避けるべき表現：「かわいそう」「問題家庭」などのレッテル表現
-- 文字数：SNSは150〜200字、ニュースレターは400〜600字
-
-<span class="heading">## 注意事項</span>
-- 子どもや保護者の個人情報は一切含めない
-- 数値・統計は出典を明記、または「要確認」と記載
-        </pre>
+    <div class="callout callout-success" style="margin-top: 20px;">
+      <div class="callout-icon">🗂️</div>
+      <div class="callout-body">
+        <div class="callout-title">作業はいつも「NPO業務」フォルダで開く</div>
+        <p class="callout-text">
+          Claude Codeを使うときは、必ず「NPO業務」フォルダを選んで開いてください。<br>
+          そうするとCLAUDE.mdが自動で読み込まれ、毎回の説明が不要になります。
+        </p>
       </div>
     </div>
   </div>
@@ -1156,20 +1163,19 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px;">
       <div style="border: 2px solid var(--border); border-radius: 12px; padding: 18px;">
-        <div style="font-size: 20px; margin-bottom: 8px;">📚</div>
-        <strong style="font-size: 14px;">AIスタートガイド教材</strong>
-        <p style="font-size: 12px; color: var(--text-light); margin: 6px 0 0;">
-          まだ読んでいない方は基礎からの教材も合わせてチェック
-        </p>
-        <a href="https://kaseigadeteiru.github.io/ai-study-guide/" style="font-size: 12px; color: var(--primary);" target="_blank">→ 教材を見る</a>
-      </div>
-      <div style="border: 2px solid var(--border); border-radius: 12px; padding: 18px;">
         <div style="font-size: 20px; margin-bottom: 8px;">👥</div>
         <strong style="font-size: 14px;">NPO AI コミュニティ</strong>
         <p style="font-size: 12px; color: var(--text-light); margin: 6px 0 0;">
           仲間と一緒に学べるオンラインサロン（月額500円〜）
         </p>
         <a href="https://yoor.jp/door/Path_Link" style="font-size: 12px; color: var(--primary);" target="_blank">→ コミュニティへ</a>
+      </div>
+      <div style="border: 2px solid var(--border); border-radius: 12px; padding: 18px;">
+        <div style="font-size: 20px; margin-bottom: 8px;">💬</div>
+        <strong style="font-size: 14px;">わからないことはコミュニティで質問</strong>
+        <p style="font-size: 12px; color: var(--text-light); margin: 6px 0 0;">
+          「ここで詰まった」「うまくいった！」など何でも共有してください
+        </p>
       </div>
     </div>
 
@@ -1202,28 +1208,46 @@
 </footer>
 
 <script>
-  // コピーボタン
-  function copyTemplate() {
-    const template = `# 私の団体について（AIへの説明）
+  function copyBtn(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✅ コピーしました！';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  }
+
+  function copySetupPrompt() {
+    const t = `デスクトップに「NPO業務」というフォルダを作ってください。
+その中に以下のサブフォルダも作ってください：
+- 議事録
+- 申請書
+- SNS投稿
+- ニュースレター
+
+そして「NPO業務」フォルダの中に CLAUDE.md というファイルを作り、
+以下の内容を書いてください。【】の部分は私が後で教えるので、
+いったん空欄（「未記入」）にしておいてください。
+
+---
+# 私の団体について（AIへの説明）
 
 ## 基本情報
-- 団体名：【NPO法人〇〇〇〇】
-- 設立年：【〇〇〇〇年】
-- 所在地：【〇〇県〇〇市】
-- スタッフ数：【常勤〇名、非常勤〇名、ボランティア〇名程度】
+- 団体名：【未記入】
+- 設立年：【未記入】
+- 所在地：【未記入】
+- スタッフ数：【未記入】
 
 ## ミッション・活動内容
-【私たちは〇〇を目指し、〇〇な活動をしています。
-主な対象者は〇〇で、〇〇などの事業を行っています。】
+【未記入】
 
 ## よく使う言葉・キーワード
-- 【例：「伴走支援」「当事者目線」「地域共生」など】
+- 【未記入】
 
 ## 文章のルール
-- 文体：【丁寧語（です・ます調）】
-- 語り口：【温かみがあり、専門用語は避けてわかりやすく】
-- 避けるべき表現：【例：「弱者」「問題児」など否定的なレッテル表現】
-- 文字数の目安：【SNS投稿は200文字以内、報告書は400〜800字程度】
+- 文体：です・ます調
+- 語り口：温かみがあり、専門用語は避けてわかりやすく
+- 避けるべき表現：否定的なレッテル表現（「弱者」「問題児」など）
+- 文字数の目安：SNS投稿は200文字以内、報告書は400〜800字程度
 
 ## よく作る文書の種類
 - 助成金申請書の下書き
@@ -1235,19 +1259,28 @@
 ## 注意事項（必ずこれを守ってください）
 - 個人情報（利用者の名前・住所等）は文書に含めない
 - 金額・数字は必ず私が確認するまで確定しない
-- 助成金名・法人名は正式名称を使う
 - 不確かな情報は「要確認」と明示する
 
 ## 担当者について
-- 私の役職：【事務局長 / 〇〇担当スタッフ】
-- 私の得意・不得意：【文書作成は得意、数字の整理が苦手】
-- AIに期待すること：【下書きの作成・アイデア出し・文書の校正】`;
+- 私の役職：【未記入】
+- AIに期待すること：下書きの作成・アイデア出し・文書の校正
+---
 
-    navigator.clipboard.writeText(template).then(() => {
-      const btn = document.querySelector('.copy-btn');
-      btn.textContent = '✅ コピーしました！';
-      setTimeout(() => { btn.textContent = '📋 コピー'; }, 2000);
-    });
+フォルダとファイルを作り終えたら「完成しました！」と教えてください。`;
+    copyBtn(document.querySelectorAll('.copy-btn')[0], t);
+  }
+
+  function copyInfoPrompt() {
+    const t = `CLAUDE.mdの【未記入】の部分を以下の情報で埋めてください。
+
+- 団体名：【例：NPO法人〇〇〇〇】
+- 設立年：【例：2015年】
+- 所在地：【例：東京都〇〇区】
+- スタッフ数：【例：常勤3名、非常勤5名、ボランティア20名程度】
+- ミッション・活動内容：【例：子どもの貧困問題に取り組み、学習支援と食事支援を行っています】
+- よく使う言葉：【例：「居場所」「伴走支援」「当事者目線」】
+- 私の役職：【例：事務局長】`;
+    copyBtn(document.querySelectorAll('.copy-btn')[1], t);
   }
 
   // スムーススクロール
