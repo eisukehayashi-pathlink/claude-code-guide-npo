@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Codeを使ってみよう！ NPO職員のためのはじめてガイド</title>
+  <style>
+    :root {
+      --primary:   #1BB8CE;
+      --primary-dark: #1498AA;
+      --primary-light: #E6F7FA;
+      --accent:    #FFD166;
+      --accent-dark: #E8B84B;
+      --danger:    #FF6B6B;
+      --danger-light: #FFF0F0;
+      --success:   #06D6A0;
+      --success-light: #E6FBF5;
+      --warning:   #FFB347;
+      --warning-light: #FFF5E6;
+      --text:      #2D3748;
+      --text-light: #718096;
+      --bg:        #FFFFFF;
+      --bg-gray:   #F7FBFC;
+      --border:    #D0EEF4;
+      --code-bg:   #1A2332;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+      color: var(--text);
+      background: var(--bg-gray);
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 60px 24px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 50%;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .header-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #4A3600;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      letter-spacing: 0.05em;
+    }
+    header h1 {
+      font-size: clamp(22px, 4vw, 36px);
+      font-weight: 800;
+      line-height: 1.4;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    header .subtitle {
+      font-size: 15px;
+      opacity: 0.9;
+      max-width: 560px;
+      margin: 0 auto 28px;
+      position: relative;
+      z-index: 1;
+    }
+    .header-meta {
+      font-size: 13px;
+      opacity: 0.75;
+      position: relative;
+      z-index: 1;
+    }
+    .logo {
+      position: absolute;
+      top: 20px; right: 24px;
+      font-size: 22px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -0.5px;
+      z-index: 2;
+    }
+    .logo span { color: var(--accent); }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* ===== TOC ===== */
+    .toc {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin: 40px auto;
+      max-width: 860px;
+    }
+    .toc-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: '📋';
+      font-size: 16px;
+    }
+    .toc ol {
+      padding-left: 20px;
+      columns: 2;
+      column-gap: 32px;
+    }
+    @media (max-width: 600px) { .toc ol { columns: 1; } }
+    .toc li {
+      margin-bottom: 8px;
+      break-inside: avoid;
+    }
+    .toc a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .toc a:hover { color: var(--primary); }
+
+    /* ===== SECTION ===== */
+    .section {
+      background: white;
+      border-radius: 16px;
+      padding: 40px 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 12px rgba(27,184,206,0.06);
+    }
+    @media (max-width: 600px) { .section { padding: 28px 20px; } }
+
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 800;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    h2 {
+      font-size: clamp(18px, 3vw, 24px);
+      font-weight: 800;
+      color: var(--text);
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin: 28px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h3::before {
+      content: '';
+      display: inline-block;
+      width: 4px; height: 18px;
+      background: var(--primary);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    p { margin-bottom: 14px; }
+    ul, ol { padding-left: 22px; margin-bottom: 16px; }
+    li { margin-bottom: 8px; }
+
+    /* ===== CALLOUT BOXES ===== */
+    .callout {
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin: 20px 0;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .callout-icon { font-size: 22px; flex-shrink: 0; line-height: 1.4; }
+    .callout-body { flex: 1; }
+    .callout-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .callout-text { font-size: 14px; line-height: 1.7; margin: 0; }
+
+    .callout-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+    .callout-info .callout-title { color: var(--primary-dark); }
+
+    .callout-warn { background: var(--warning-light); border-left: 4px solid var(--warning); }
+    .callout-warn .callout-title { color: #C47A00; }
+
+    .callout-danger { background: var(--danger-light); border-left: 4px solid var(--danger); }
+    .callout-danger .callout-title { color: #C0392B; }
+
+    .callout-success { background: var(--success-light); border-left: 4px solid var(--success); }
+    .callout-success .callout-title { color: #059669; }
+
+    /* ===== STEP CARDS ===== */
+    .step-list { list-style: none; padding: 0; counter-reset: step; }
+    .step-item {
+      counter-increment: step;
+      display: flex;
+      gap: 18px;
+      margin-bottom: 28px;
+      align-items: flex-start;
+    }
+    .step-num {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .step-num-circle {
+      width: 40px; height: 40px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+    .step-num-line {
+      width: 2px;
+      flex: 1;
+      min-height: 20px;
+      background: var(--border);
+      margin-top: 6px;
+    }
+    .step-item:last-child .step-num-line { display: none; }
+    .step-body { flex: 1; padding-top: 8px; }
+    .step-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    .step-desc { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+    /* ===== CODE BLOCKS ===== */
+    .code-block {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      overflow-x: auto;
+      position: relative;
+    }
+    .code-label {
+      font-size: 11px;
+      color: #7DD3FC;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .code-block pre {
+      font-family: 'Courier New', 'SF Mono', monospace;
+      font-size: 14px;
+      color: #E2E8F0;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .code-block pre .comment { color: #6EE7B7; }
+    .code-block pre .key { color: #93C5FD; }
+    .code-block pre .val { color: #FCA5A5; }
+    .code-block pre .heading { color: #FCD34D; font-weight: bold; }
+
+    /* COPY BUTTON */
+    .code-wrap { position: relative; }
+    .copy-btn {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: #CBD5E0;
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+    /* ===== HIGHLIGHT BOX ===== */
+    .highlight-box {
+      background: linear-gradient(135deg, var(--primary-light) 0%, #FFFAE6 100%);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 24px 0;
+    }
+    .highlight-box h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    thead tr {
+      background: var(--primary);
+      color: white;
+    }
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 700;
+    }
+    tbody tr:nth-child(even) { background: var(--bg-gray); }
+    tbody td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+
+    /* ===== TAGS ===== */
+    .tag {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin: 2px;
+    }
+    .tag-accent {
+      background: #FFF8E1;
+      color: #9A6700;
+    }
+
+    /* ===== CHECKLIST ===== */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .checklist li::before {
+      content: '☐';
+      font-size: 18px;
+      color: var(--primary);
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--primary-dark);
+      color: rgba(255,255,255,0.85);
+      text-align: center;
+      padding: 40px 24px;
+      margin-top: 40px;
+    }
+    footer .footer-logo {
+      font-size: 24px;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 8px;
+    }
+    footer .footer-logo span { color: var(--accent); }
+    footer p { font-size: 13px; opacity: 0.7; margin-bottom: 6px; }
+    footer .hearts { font-size: 20px; margin-top: 16px; }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-bar {
+      background: var(--primary-light);
+      border-radius: 8px;
+      height: 8px;
+      margin: 8px 0 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent-dark));
+      border-radius: 8px;
+      transition: width 0.3s;
+    }
+
+    /* ===== DIFFICULTY BADGE ===== */
+    .diff-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .diff-easy { background: #D1FAE5; color: #065F46; }
+    .diff-mid  { background: #FEF3C7; color: #92400E; }
+    .diff-hard { background: #FEE2E2; color: #991B1B; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .toc ol { columns: 1; }
+      .step-item { flex-direction: column; gap: 10px; }
+      .step-num-line { display: none; }
+    }
+
+    /* ===== ANCHOR ===== */
+    [id] { scroll-margin-top: 24px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Path<span>Link</span></div>
+  <div class="header-badge">NPO AI Community 限定ガイド</div>
+  <h1>Claude Codeをはじめよう！<br>NPO職員のための<br>やさしいセットアップガイド</h1>
+  <p class="subtitle">
+    ChatGPTのチャット活用からもう一歩先へ。<br>
+    「Claude Code」と「CLAUDE.md」を使って、<br>
+    あなたの業務にフィットしたAIアシスタントを育てましょう。
+  </p>
+  <div class="header-meta">所要時間：約30〜45分 ／ 対象：ChatGPTを使い始めた方 ／ 2025年版</div>
+</header>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">この記事の目次</div>
+    <ol>
+      <li><a href="#sec-what">Claude Codeって何？</a></li>
+      <li><a href="#sec-why">なぜCLAUDE.mdが重要なの？</a></li>
+      <li><a href="#sec-prereq">始める前に確認しよう</a></li>
+      <li><a href="#sec-install">Claude Codeをインストールする</a></li>
+      <li><a href="#sec-claudemd">CLAUDE.mdを作ってみよう</a></li>
+      <li><a href="#sec-npo-template">NPO向けテンプレート</a></li>
+      <li><a href="#sec-tips">うまく使うためのコツ</a></li>
+      <li><a href="#sec-next">次のステップ</a></li>
+    </ol>
+  </div>
+
+  <!-- ===== SECTION 1 ===== -->
+  <div class="section" id="sec-what">
+    <div class="section-header">
+      <span class="section-number">1</span>
+      <h2>Claude Codeって何？</h2>
+    </div>
+
+    <p>
+      ChatGPTでは、毎回「あなたはNPOの広報担当で…」と長い説明を入力していませんでしたか？
+      <strong>Claude Code</strong>は、そういった「毎回説明する手間」を大幅に減らしてくれるツールです。
+    </p>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <div class="callout-title">一言で言うと</div>
+        <p class="callout-text">
+          Claude Code ＝「Claudeをパソコン上で動かせるアプリ」です。<br>
+          チャット画面ではなく、あなたのパソコンにインストールして使います。
+          ファイルを読み込んだり、文書を自動で作ったりと、より高度な使い方ができます。
+        </p>
+      </div>
+    </div>
+
+    <h3>ChatGPTとの違いは？</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>比較ポイント</th>
+          <th>ChatGPT（ブラウザ版）</th>
+          <th>Claude Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>使い方</td>
+          <td>ブラウザで開いて使う</td>
+          <td>パソコンにインストール</td>
+        </tr>
+        <tr>
+          <td>毎回の説明</td>
+          <td>毎回入力が必要</td>
+          <td>CLAUDE.mdに一度書けばOK</td>
+        </tr>
+        <tr>
+          <td>ファイル操作</td>
+          <td>手動でコピー＆ペースト</td>
+          <td>ファイルを直接読み書き</td>
+        </tr>
+        <tr>
+          <td>複数作業</td>
+          <td>1つずつ</td>
+          <td>複数の作業を連続して実行</td>
+        </tr>
+        <tr>
+          <td>カスタマイズ</td>
+          <td>GPTsで設定（有料プラン）</td>
+          <td>CLAUDE.mdで自由に設定</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body">
+        <div class="callout-title">NPOでの活用イメージ</div>
+        <p class="callout-text">
+          例えば「助成金の申請書を書いて」と伝えるだけで、<br>
+          あなたの団体の理念・事業内容を把握した上で、申請書の下書きを自動生成することができます。
+          毎回「私たちは〇〇な団体で…」と説明する必要がなくなります！
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2 ===== -->
+  <div class="section" id="sec-why">
+    <div class="section-header">
+      <span class="section-number">2</span>
+      <h2>なぜCLAUDE.mdが重要なの？</h2>
+    </div>
+
+    <p>
+      Claude Codeで最も大切なのが <strong>「CLAUDE.md」</strong> というファイルです。
+      これは、AIへの「永続的な説明書」です。
+    </p>
+
+    <div class="highlight-box">
+      <h4>📖 CLAUDE.mdとは？</h4>
+      <p style="font-size: 14px; margin: 0;">
+        CLAUDE.mdとは、Claudeが作業を始める前に<strong>必ず読む設定ファイル</strong>です。<br>
+        「私の団体はこういう団体です」「この言葉は使わないでください」「出力はいつも箇条書きで」<br>
+        といったルールや背景情報を書いておくと、毎回の会話でそれが反映されます。
+      </p>
+    </div>
+
+    <h3>CLAUDE.mdがあると何が変わる？</h3>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">前</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">CLAUDE.mdがない場合</div>
+          <div class="step-desc">
+            「私たちはNPO法人〇〇です。子どもの貧困問題に取り組んでいます。主な事業は…
+            対象は小学生から高校生で…ちなみに文章は丁寧語でお願いします…」
+            ←毎回これを書く必要がある 😰
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">後</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">CLAUDE.mdがある場合</div>
+          <div class="step-desc">
+            「ニュースレターの下書きを作って」だけで OK！🎉<br>
+            団体の情報・トーン・注意事項はCLAUDE.mdから自動で読み込まれます。
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ===== SECTION 3 ===== -->
+  <div class="section" id="sec-prereq">
+    <div class="section-header">
+      <span class="section-number">3</span>
+      <h2>始める前に確認しよう</h2>
+    </div>
+
+    <p>インストール前に、以下を確認してください。焦らず1つずつ確認してみましょう。</p>
+
+    <h3>必要なもの</h3>
+    <ul class="checklist">
+      <li><strong>Claudeのアカウント</strong>（claude.ai）― 無料プランでも可（一部機能制限あり）</li>
+      <li><strong>パソコン</strong>（Windows または Mac） ― スマートフォンでは動作しません</li>
+      <li><strong>インターネット接続</strong></li>
+      <li><strong>少しの好奇心！</strong> ― 難しく考えなくて大丈夫です</li>
+    </ul>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <div class="callout-title">有料プランについて</div>
+        <p class="callout-text">
+          Claude Code はClaudeの有料プラン（Pro: 月額$20〜）または API利用が必要です。<br>
+          本格的な業務利用には有料プランをおすすめします。まず無料で試してから検討してもOKです。
+        </p>
+      </div>
+    </div>
+
+    <h3>難易度の目安</h3>
+    <table>
+      <thead>
+        <tr><th>作業</th><th>難易度</th><th>所要時間</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Claude Codeのインストール</td>
+          <td><span class="diff-badge diff-mid">★★☆ やや難しい</span></td>
+          <td>10〜20分</td>
+        </tr>
+        <tr>
+          <td>CLAUDE.mdの作成</td>
+          <td><span class="diff-badge diff-easy">★☆☆ かんたん</span></td>
+          <td>10〜15分</td>
+        </tr>
+        <tr>
+          <td>日常利用に慣れる</td>
+          <td><span class="diff-badge diff-easy">★☆☆ かんたん</span></td>
+          <td>数日〜1週間</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 4 ===== -->
+  <div class="section" id="sec-install">
+    <div class="section-header">
+      <span class="section-number">4</span>
+      <h2>Claude Codeをインストールする</h2>
+    </div>
+
+    <p>
+      Claude CodeはAnthropicが公式に提供しているツールです。
+      難しそうに聞こえますが、手順通りに進めれば大丈夫です。一緒に進みましょう。
+    </p>
+
+    <h3>方法① デスクトップアプリ（おすすめ・最も簡単）</h3>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">1</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Claudeのデスクトップアプリをダウンロードする</div>
+          <div class="step-desc">
+            <code style="background: var(--primary-light); padding: 2px 8px; border-radius: 4px; font-size: 13px;">claude.ai/download</code>
+            にアクセスして、Mac版またはWindows版をダウンロードします。
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">2</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">アプリをインストールする</div>
+          <div class="step-desc">
+            ダウンロードしたファイルを開き、通常のアプリと同様にインストールします。<br>
+            Macの場合：.dmgファイルを開いて Applications にドラッグ<br>
+            Windowsの場合：.exeファイルを実行して指示に従う
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">3</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Claudeアカウントでログインする</div>
+          <div class="step-desc">
+            アプリを起動し、claude.aiのアカウントでログインします。<br>
+            「Claude Codeを使用する」または「Code」タブを選択してください。
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">4</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">作業フォルダを選ぶ</div>
+          <div class="step-desc">
+            最初に「どのフォルダで作業しますか？」と聞かれます。<br>
+            例えば「NPO業務」フォルダや「デスクトップ」を選んでOKです。<br>
+            このフォルダの中にCLAUDE.mdを作成します。
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">🖥️</div>
+      <div class="callout-body">
+        <div class="callout-title">「作業フォルダ」って何？</div>
+        <p class="callout-text">
+          Claude Codeは「フォルダ単位」で動作します。
+          例えば「NPO仕事」というフォルダを作り、その中で使うと、
+          そのフォルダ内のファイルをClaudeが参照・作成できるようになります。
+          まずはデスクトップに「claude-test」フォルダを作って試してみましょう。
+        </p>
+      </div>
+    </div>
+
+    <h3>方法② VSCode拡張機能（少し慣れてきたら）</h3>
+    <p style="font-size: 14px;">
+      Visual Studio Code（VSCode）を使っている方は、拡張機能からClaude Codeをインストールする方法もあります。
+      まずはデスクトップアプリで慣れてから試してみてください。
+    </p>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <div class="callout-title">インストール完了の確認</div>
+        <p class="callout-text">
+          アプリを起動して、チャット画面が表示されたらインストール成功です！<br>
+          最初に「こんにちは！何か手伝えることはありますか？」と聞いてみましょう。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5 ===== -->
+  <div class="section" id="sec-claudemd">
+    <div class="section-header">
+      <span class="section-number">5</span>
+      <h2>CLAUDE.mdを作ってみよう</h2>
+    </div>
+
+    <p>
+      いよいよメインの作業です！CLAUDE.mdを作ることで、Claudeがあなたの団体を「覚えて」くれます。
+    </p>
+
+    <h3>CLAUDE.mdファイルの作り方</h3>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">1</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">作業フォルダを開く</div>
+          <div class="step-desc">
+            先ほど選んだ作業フォルダ（例：「NPO業務」フォルダ）をエクスプローラーまたはFinderで開きます。
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">2</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">「CLAUDE.md」という名前でファイルを作る</div>
+          <div class="step-desc">
+            メモ帳（Windows）またはテキストエディット（Mac）を開き、<br>
+            名前を <strong>「CLAUDE.md」</strong>（大文字・拡張子含む）として保存します。<br>
+            <span style="color: var(--danger); font-size: 13px;">⚠ 「CLAUDE.txt」ではなく「CLAUDE.md」にしてください</span>
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">3</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">内容を書く</div>
+          <div class="step-desc">
+            次のセクションのテンプレートを参考に、あなたの団体の情報を書き込みます。<br>
+            難しく考えず、「AIへのメモ書き」くらいの気持ちで書いてOKです。
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">4</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Claude Codeから確認する</div>
+          <div class="step-desc">
+            Claude Codeアプリで同じフォルダを開き、「CLAUDE.mdを読んで、私の団体について教えて」と入力してみましょう。
+            正しく読み込まれていれば、団体の情報を答えてくれます。
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <div class="callout-title">ファイル名の注意点</div>
+        <p class="callout-text">
+          ファイル名は必ず <strong>CLAUDE.md</strong>（すべて大文字）にしてください。<br>
+          小文字の「claude.md」でも動作しますが、大文字が推奨されています。<br>
+          また、フォルダの直下（一番上の階層）に置くことが重要です。
+        </p>
+      </div>
+    </div>
+
+    <h3>CLAUDE.mdに書くべき4つの内容</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+      <div style="background: var(--primary-light); border-radius: 10px; padding: 18px;">
+        <div style="font-size: 22px; margin-bottom: 8px;">🏢</div>
+        <strong style="font-size: 14px; color: var(--primary-dark);">① 団体プロフィール</strong>
+        <p style="font-size: 13px; margin: 8px 0 0; color: var(--text-light);">
+          団体名・設立年・ミッション・主な事業・対象者
+        </p>
+      </div>
+      <div style="background: #FFF8E1; border-radius: 10px; padding: 18px;">
+        <div style="font-size: 22px; margin-bottom: 8px;">✍️</div>
+        <strong style="font-size: 14px; color: #92400E;">② 文章のルール</strong>
+        <p style="font-size: 13px; margin: 8px 0 0; color: var(--text-light);">
+          使う言葉・使わない言葉・文体（丁寧語か？）・文字数の目安
+        </p>
+      </div>
+      <div style="background: var(--success-light); border-radius: 10px; padding: 18px;">
+        <div style="font-size: 22px; margin-bottom: 8px;">⚡</div>
+        <strong style="font-size: 14px; color: #065F46;">③ よくある依頼</strong>
+        <p style="font-size: 13px; margin: 8px 0 0; color: var(--text-light);">
+          報告書・ニュースレター・SNS投稿など、よく作る文書の型
+        </p>
+      </div>
+      <div style="background: var(--danger-light); border-radius: 10px; padding: 18px;">
+        <div style="font-size: 22px; margin-bottom: 8px;">🚫</div>
+        <strong style="font-size: 14px; color: #C0392B;">④ 禁止事項・注意点</strong>
+        <p style="font-size: 13px; margin: 8px 0 0; color: var(--text-light);">
+          個人情報の扱い・書いてはいけないこと・確認が必要な事項
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6 ===== -->
+  <div class="section" id="sec-npo-template">
+    <div class="section-header">
+      <span class="section-number">6</span>
+      <h2>NPO向けCLAUDE.mdテンプレート</h2>
+    </div>
+
+    <p>
+      以下のテンプレートをコピーして、<strong>【　】の部分をあなたの団体の情報に書き換えてください。</strong>
+      書き換えたものをCLAUDE.mdとして保存するだけでOKです。
+    </p>
+
+    <div class="code-wrap">
+      <div class="code-block">
+        <div class="code-label">📄 CLAUDE.md テンプレート（コピーしてお使いください）</div>
+        <button class="copy-btn" onclick="copyTemplate()">📋 コピー</button>
+        <pre>
+<span class="heading"># 私の団体について（AIへの説明）</span>
+
+<span class="heading">## 基本情報</span>
+- <span class="key">団体名</span>：<span class="val">【NPO法人〇〇〇〇】</span>
+- <span class="key">設立年</span>：<span class="val">【〇〇〇〇年】</span>
+- <span class="key">所在地</span>：<span class="val">【〇〇県〇〇市】</span>
+- <span class="key">スタッフ数</span>：<span class="val">【常勤〇名、非常勤〇名、ボランティア〇名程度】</span>
+
+<span class="heading">## ミッション・活動内容</span>
+<span class="val">【私たちは〇〇を目指し、〇〇な活動をしています。
+主な対象者は〇〇で、〇〇などの事業を行っています。】</span>
+
+<span class="heading">## よく使う言葉・キーワード</span>
+- <span class="val">【例：「伴走支援」「当事者目線」「地域共生」など】</span>
+
+<span class="heading">## 文章のルール</span>
+- 文体：<span class="val">【丁寧語（です・ます調）】</span>
+- 語り口：<span class="val">【温かみがあり、専門用語は避けてわかりやすく】</span>
+- 避けるべき表現：<span class="val">【例：「弱者」「問題児」など否定的なレッテル表現】</span>
+- 文字数の目安：<span class="val">【SNS投稿は200文字以内、報告書は400〜800字程度】</span>
+
+<span class="heading">## よく作る文書の種類</span>
+- 助成金申請書の下書き
+- 月次ニュースレター（支援者向け）
+- 活動報告書
+- SNS投稿文（Facebook・Instagram）
+- 議事録の整理
+
+<span class="heading">## 注意事項（必ずこれを守ってください）</span>
+- 個人情報（利用者の名前・住所等）は文書に含めない
+- 金額・数字は必ず私が確認するまで確定しない
+- 助成金名・法人名は正式名称を使う
+- 不確かな情報は「要確認」と明示する
+
+<span class="heading">## 担当者について</span>
+- 私の役職：<span class="val">【事務局長 / 〇〇担当スタッフ】</span>
+- 私の得意・不得意：<span class="val">【文書作成は得意、数字の整理が苦手】</span>
+- AIに期待すること：<span class="val">【下書きの作成・アイデア出し・文書の校正】</span>
+        </pre>
+      </div>
+    </div>
+
+    <h3>書き換えのヒント</h3>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">💬</div>
+      <div class="callout-body">
+        <div class="callout-title">うまく書けない場合は、Claudeに聞いてみよう！</div>
+        <p class="callout-text">
+          Claudeに「私の団体はこんな団体です：〇〇〇〇。これをCLAUDE.md用に整理してください」と伝えると、
+          CLAUDE.mdの文章を自動で作ってくれます。最初から完璧に書く必要はありません。
+        </p>
+      </div>
+    </div>
+
+    <h3>記入例（子ども支援系NPOの場合）</h3>
+
+    <div class="code-wrap">
+      <div class="code-block">
+        <div class="code-label">📝 記入例（参考）</div>
+        <pre>
+<span class="heading"># 私の団体について（AIへの説明）</span>
+
+<span class="heading">## 基本情報</span>
+- <span class="key">団体名</span>：NPO法人こどもサポートセンター〇〇
+- <span class="key">設立年</span>：2015年
+- <span class="key">所在地</span>：東京都〇〇区
+- <span class="key">スタッフ数</span>：常勤3名、非常勤5名、ボランティア30名程度
+
+<span class="heading">## ミッション・活動内容</span>
+すべての子どもが安心して育てる地域社会を目指しています。
+主な対象は経済的困難を抱える家庭の子ども（小〜高校生）で、
+学習支援・食事支援・居場所づくりを行っています。
+
+<span class="heading">## よく使う言葉・キーワード</span>
+- 「子どもの貧困」「居場所」「食育」「無料塾」「学習支援」
+
+<span class="heading">## 文章のルール</span>
+- 文体：です・ます調
+- 語り口：温かく、保護者や地域の方に伝わるわかりやすい言葉で
+- 避けるべき表現：「かわいそう」「問題家庭」などのレッテル表現
+- 文字数：SNSは150〜200字、ニュースレターは400〜600字
+
+<span class="heading">## 注意事項</span>
+- 子どもや保護者の個人情報は一切含めない
+- 数値・統計は出典を明記、または「要確認」と記載
+        </pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 7 ===== -->
+  <div class="section" id="sec-tips">
+    <div class="section-header">
+      <span class="section-number">7</span>
+      <h2>うまく使うためのコツ</h2>
+    </div>
+
+    <h3>コツ① まず試して、少しずつ育てる</h3>
+    <p>
+      CLAUDE.mdは最初から完璧でなくてOKです。使いながら「ここが足りなかった」と気づいたら追記していきましょう。
+      AIと一緒に成長させていくイメージです。
+    </p>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">🌱</div>
+      <div class="callout-body">
+        <div class="callout-title">改善のサイクル</div>
+        <p class="callout-text">
+          使う → 「なんか違う」と感じる → CLAUDE.mdに追記・修正 → また使う<br>
+          このサイクルを繰り返すことで、どんどん使いやすくなります。
+        </p>
+      </div>
+    </div>
+
+    <h3>コツ② 具体的な指示を出す</h3>
+
+    <table>
+      <thead>
+        <tr><th>あいまいな指示 ❌</th><th>具体的な指示 ✅</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>「文章を書いて」</td>
+          <td>「500字以内で、Facebookに投稿する夏祭りの告知文を書いて」</td>
+        </tr>
+        <tr>
+          <td>「報告書をまとめて」</td>
+          <td>「添付の議事録から、箇条書きで3点の決定事項を抜き出して」</td>
+        </tr>
+        <tr>
+          <td>「助成金の文章を直して」</td>
+          <td>「この文章をより具体的で説得力のある表現に修正して。対象は助成財団の審査員」</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>コツ③ 絶対に守るべきこと（情報セキュリティ）</h3>
+
+    <div class="callout callout-danger">
+      <div class="callout-icon">🔒</div>
+      <div class="callout-body">
+        <div class="callout-title">個人情報は入力しない！</div>
+        <p class="callout-text">
+          利用者・支援対象者の<strong>氏名・住所・電話番号・健康情報</strong>などをClaude Codeに入力しないでください。<br>
+          AIのサービスはデータが外部に送信されます。個人情報保護の観点から、必ず匿名化・一般化してから入力しましょう。<br><br>
+          ❌「田中花子さん（〇〇区在住、15歳）の支援記録は…」<br>
+          ✅「支援対象者（15歳女子）のケース記録は…」
+        </p>
+      </div>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">📋</div>
+      <div class="callout-body">
+        <div class="callout-title">AIの出力は必ず確認・修正する</div>
+        <p class="callout-text">
+          Claudeが作った文章は「下書き」です。数字・固有名詞・事実関係は必ず人間が確認してください。
+          AIは誤った情報を自信満々に答えることがあります（ハルシネーションと呼ばれます）。
+          最終責任は常に人間が持ちましょう。
+        </p>
+      </div>
+    </div>
+
+    <h3>コツ④ 便利な使い方アイデア（NPO向け）</h3>
+
+    <div style="display: grid; gap: 12px; margin: 16px 0;">
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 20px; border-left: 4px solid var(--primary);">
+        <strong style="font-size: 14px;">📝 議事録の整理</strong>
+        <p style="font-size: 13px; margin: 6px 0 0; color: var(--text-light);">
+          メモやボイスメモの文字起こしをペーストして「決定事項・次のアクション・担当者を整理して」
+        </p>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 20px; border-left: 4px solid var(--accent-dark);">
+        <strong style="font-size: 14px;">📊 助成金申請書の下書き</strong>
+        <p style="font-size: 13px; margin: 6px 0 0; color: var(--text-light);">
+          「〇〇財団の申請書の『活動の必要性』欄（400字以内）を書いて」と依頼
+        </p>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 20px; border-left: 4px solid var(--success);">
+        <strong style="font-size: 14px;">📣 SNS・ニュースレター</strong>
+        <p style="font-size: 13px; margin: 6px 0 0; color: var(--text-light);">
+          「先月の活動レポートをもとに、Facebookの投稿文を3案作って」
+        </p>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 20px; border-left: 4px solid var(--danger);">
+        <strong style="font-size: 14px;">📧 メール下書き</strong>
+        <p style="font-size: 13px; margin: 6px 0 0; color: var(--text-light);">
+          「行政担当者への事業報告メールを書いて。敬語・丁寧な表現で」
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 8 ===== -->
+  <div class="section" id="sec-next">
+    <div class="section-header">
+      <span class="section-number">8</span>
+      <h2>次のステップ</h2>
+    </div>
+
+    <p>
+      CLAUDE.mdが完成したら、ぜひコミュニティでシェアしてください！
+      「こう書いたらうまくいった」という声が、仲間の力になります。
+    </p>
+
+    <h3>今日からできる3ステップ</h3>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">1</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">CLAUDE.mdをとりあえず作ってみる</div>
+          <div class="step-desc">
+            完璧でなくてOK。最低でも「団体名・ミッション・文体ルール」の3点だけでも書いて保存してみましょう。
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">2</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">実際の業務で1週間使ってみる</div>
+          <div class="step-desc">
+            議事録の整理・SNS投稿・メール文作成など、小さな仕事から始めてみましょう。
+            「あ、ここが足りない」と思ったらすぐCLAUDE.mdに追記します。
+          </div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">
+          <div class="step-num-circle">3</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">コミュニティで共有・質問する</div>
+          <div class="step-desc">
+            「こんなCLAUDE.mdを作ってみた」「ここがうまくいかない」をコミュニティで共有しましょう。
+            みんなで改善していきましょう！
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <h3>さらに学びたい方へ</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px;">
+      <div style="border: 2px solid var(--border); border-radius: 12px; padding: 18px;">
+        <div style="font-size: 20px; margin-bottom: 8px;">📚</div>
+        <strong style="font-size: 14px;">AIスタートガイド教材</strong>
+        <p style="font-size: 12px; color: var(--text-light); margin: 6px 0 0;">
+          まだ読んでいない方は基礎からの教材も合わせてチェック
+        </p>
+        <a href="https://kaseigadeteiru.github.io/ai-study-guide/" style="font-size: 12px; color: var(--primary);" target="_blank">→ 教材を見る</a>
+      </div>
+      <div style="border: 2px solid var(--border); border-radius: 12px; padding: 18px;">
+        <div style="font-size: 20px; margin-bottom: 8px;">👥</div>
+        <strong style="font-size: 14px;">NPO AI コミュニティ</strong>
+        <p style="font-size: 12px; color: var(--text-light); margin: 6px 0 0;">
+          仲間と一緒に学べるオンラインサロン（月額500円〜）
+        </p>
+        <a href="https://yoor.jp/door/Path_Link" style="font-size: 12px; color: var(--primary);" target="_blank">→ コミュニティへ</a>
+      </div>
+    </div>
+
+    <div class="callout callout-success" style="margin-top: 28px;">
+      <div class="callout-icon">🎉</div>
+      <div class="callout-body">
+        <div class="callout-title">まとめ：今日のポイント</div>
+        <p class="callout-text">
+          ✅ Claude Code はパソコンにインストールして使うAIツール<br>
+          ✅ CLAUDE.md に団体の情報を書くと、毎回の説明が不要になる<br>
+          ✅ 最初は簡単な内容でOK。使いながら少しずつ育てよう<br>
+          ✅ 個人情報は絶対に入力しない・出力は必ず人間が確認する<br>
+          ✅ 困ったらコミュニティで質問！一人で悩まなくていい
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Path<span>Link</span></div>
+  <p>NPO向けコンサルティング・AI活用支援</p>
+  <p>NPO AI Community — yoor.jp/door/Path_Link</p>
+  <div class="hearts">💛 💛</div>
+  <p style="margin-top: 12px; font-size: 11px; opacity: 0.5;">
+    © 2025 PathLink. 本記事はコミュニティメンバー向けの学習教材です。
+  </p>
+</footer>
+
+<script>
+  // コピーボタン
+  function copyTemplate() {
+    const template = `# 私の団体について（AIへの説明）
+
+## 基本情報
+- 団体名：【NPO法人〇〇〇〇】
+- 設立年：【〇〇〇〇年】
+- 所在地：【〇〇県〇〇市】
+- スタッフ数：【常勤〇名、非常勤〇名、ボランティア〇名程度】
+
+## ミッション・活動内容
+【私たちは〇〇を目指し、〇〇な活動をしています。
+主な対象者は〇〇で、〇〇などの事業を行っています。】
+
+## よく使う言葉・キーワード
+- 【例：「伴走支援」「当事者目線」「地域共生」など】
+
+## 文章のルール
+- 文体：【丁寧語（です・ます調）】
+- 語り口：【温かみがあり、専門用語は避けてわかりやすく】
+- 避けるべき表現：【例：「弱者」「問題児」など否定的なレッテル表現】
+- 文字数の目安：【SNS投稿は200文字以内、報告書は400〜800字程度】
+
+## よく作る文書の種類
+- 助成金申請書の下書き
+- 月次ニュースレター（支援者向け）
+- 活動報告書
+- SNS投稿文（Facebook・Instagram）
+- 議事録の整理
+
+## 注意事項（必ずこれを守ってください）
+- 個人情報（利用者の名前・住所等）は文書に含めない
+- 金額・数字は必ず私が確認するまで確定しない
+- 助成金名・法人名は正式名称を使う
+- 不確かな情報は「要確認」と明示する
+
+## 担当者について
+- 私の役職：【事務局長 / 〇〇担当スタッフ】
+- 私の得意・不得意：【文書作成は得意、数字の整理が苦手】
+- AIに期待すること：【下書きの作成・アイデア出し・文書の校正】`;
+
+    navigator.clipboard.writeText(template).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✅ コピーしました！';
+      setTimeout(() => { btn.textContent = '📋 コピー'; }, 2000);
+    });
+  }
+
+  // スムーススクロール
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
