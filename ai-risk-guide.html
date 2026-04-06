@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NPOのためのAIリスク完全ガイド</title>
+  <style>
+    :root {
+      --primary: #1BB8CE;
+      --primary-dark: #1498AA;
+      --primary-light: #E6F7FA;
+      --accent: #FFD166;
+      --accent-dark: #E8B84B;
+      --danger: #FF6B6B;
+      --danger-light: #FFF0F0;
+      --success: #06D6A0;
+      --success-light: #E6FBF5;
+      --warning: #FFB347;
+      --warning-light: #FFF5E6;
+      --purple: #8B5CF6;
+      --purple-light: #F3F0FF;
+      --text: #2D3748;
+      --text-light: #718096;
+      --bg: #FFFFFF;
+      --bg-gray: #F7FBFC;
+      --border: #D0EEF4;
+      --code-bg: #1A2332;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+      color: var(--text); background: var(--bg-gray); line-height: 1.8; font-size: 16px;
+    }
+    header {
+      background: linear-gradient(135deg, #1A2332 0%, #C0392B 100%);
+      color: white; padding: 56px 24px 44px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    header::before {
+      content: ''; position: absolute; top: -80px; right: -80px;
+      width: 300px; height: 300px; background: rgba(255,107,107,0.12); border-radius: 50%;
+    }
+    header::after {
+      content: ''; position: absolute; bottom: -100px; left: -60px;
+      width: 260px; height: 260px; background: rgba(255,209,102,0.07); border-radius: 50%;
+    }
+    .logo { position: absolute; top: 20px; right: 24px; font-size: 22px; font-weight: 900; color: white; z-index: 2; }
+    .logo span { color: var(--accent); }
+    .header-badge {
+      display: inline-block; background: var(--danger); color: white;
+      font-size: 12px; font-weight: 700; padding: 4px 14px;
+      border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.05em;
+      position: relative; z-index: 1;
+    }
+    header h1 { font-size: clamp(20px, 3.5vw, 30px); font-weight: 800; line-height: 1.4; margin-bottom: 14px; position: relative; z-index: 1; }
+    header .subtitle { font-size: 14px; opacity: 0.85; max-width: 540px; margin: 0 auto 20px; position: relative; z-index: 1; line-height: 1.7; }
+    .header-meta { font-size: 12px; opacity: 0.6; z-index: 1; position: relative; }
+    .container { max-width: 880px; margin: 0 auto; padding: 0 16px 48px; }
+
+    /* SUMMARY */
+    .summary-card {
+      background: white; border-radius: 14px; padding: 28px 32px;
+      margin: 28px 0 0; box-shadow: 0 2px 12px rgba(192,57,43,0.08);
+      border-top: 4px solid var(--danger);
+    }
+    .summary-label {
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--danger); margin-bottom: 10px;
+    }
+    .summary-title { font-size: 17px; font-weight: 800; margin-bottom: 14px; color: var(--text); }
+    .summary-points { list-style: none; padding: 0; margin-bottom: 16px; }
+    .summary-points li {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 14px; margin-bottom: 8px; line-height: 1.6;
+    }
+    .summary-points li::before { content: '✓'; color: var(--danger); font-weight: 800; flex-shrink: 0; }
+    .summary-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+    .summary-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text-light);
+      background: var(--bg-gray); border-radius: 20px; padding: 4px 12px;
+    }
+    .related-link {
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);
+      font-size: 13px; color: var(--text-light);
+    }
+    .related-link a { color: var(--primary); text-decoration: none; font-weight: 700; }
+    .related-link a:hover { text-decoration: underline; }
+
+    /* TOC */
+    .toc { background: white; border: 2px solid var(--border); border-radius: 14px; padding: 24px 28px; margin: 20px 0; }
+    .toc-title { font-size: 13px; font-weight: 700; color: var(--danger); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .toc ol { padding-left: 18px; }
+    .toc li { margin-bottom: 5px; }
+    .toc a { color: var(--text); text-decoration: none; font-size: 13px; }
+    .toc a:hover { color: var(--danger); }
+
+    /* SECTION */
+    .section { background: white; border-radius: 14px; padding: 36px 36px; margin-bottom: 24px; box-shadow: 0 2px 10px rgba(27,184,206,0.06); }
+    @media (max-width: 560px) { .section { padding: 24px 18px; } }
+    .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--danger-light); }
+    .section-num { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: white; flex-shrink: 0; background: var(--danger); }
+    .section-num-agent { background: #C0392B; }
+    h2 { font-size: clamp(16px, 2.5vw, 20px); font-weight: 800; }
+    h3 { font-size: 16px; font-weight: 700; color: #C0392B; margin: 26px 0 10px; display: flex; align-items: center; gap: 8px; }
+    h3::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--danger); border-radius: 2px; flex-shrink: 0; }
+    h3.h3-default { color: var(--primary-dark); }
+    h3.h3-default::before { background: var(--primary); }
+    p { margin-bottom: 12px; font-size: 15px; }
+
+    /* CALLOUT */
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; align-items: flex-start; }
+    .callout-icon { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
+    .callout-body { flex: 1; }
+    .callout-title { font-weight: 700; font-size: 13px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .callout-text { font-size: 13px; line-height: 1.7; margin: 0; }
+    .callout-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+    .callout-info .callout-title { color: var(--primary-dark); }
+    .callout-warn { background: var(--warning-light); border-left: 4px solid var(--warning); }
+    .callout-warn .callout-title { color: #C47A00; }
+    .callout-danger { background: var(--danger-light); border-left: 4px solid var(--danger); }
+    .callout-danger .callout-title { color: #C0392B; }
+    .callout-success { background: var(--success-light); border-left: 4px solid var(--success); }
+    .callout-success .callout-title { color: #059669; }
+    .callout-purple { background: var(--purple-light); border-left: 4px solid var(--purple); }
+    .callout-purple .callout-title { color: #6D28D9; }
+
+    /* TABLES */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 480px; }
+    thead tr { background: var(--danger); color: white; }
+    thead th { padding: 11px 14px; text-align: left; font-weight: 700; }
+    thead th.head-primary { background: var(--primary); }
+    tbody tr:nth-child(even) { background: var(--bg-gray); }
+    tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+    .badge-red { background: #FEE2E2; color: #C0392B; }
+    .badge-yellow { background: #FEF3C7; color: #92400E; }
+    .badge-green { background: #D1FAE5; color: #065F46; }
+    .badge-blue { background: var(--primary-light); color: var(--primary-dark); }
+    .policy-ok { color: #059669; font-weight: 700; }
+    .policy-warn { color: #C47A00; font-weight: 700; }
+
+    /* RISK CARDS */
+    .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    @media (max-width: 560px) { .risk-grid { grid-template-columns: 1fr; } }
+    .risk-card { border-radius: 10px; padding: 16px 18px; border: 1.5px solid; }
+    .risk-card-high { border-color: var(--danger); background: var(--danger-light); }
+    .risk-card-mid { border-color: var(--warning); background: var(--warning-light); }
+    .risk-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .risk-label-high { color: #C0392B; }
+    .risk-label-mid { color: #C47A00; }
+    .risk-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .risk-desc { font-size: 12px; color: var(--text-light); line-height: 1.6; }
+
+    /* STAT */
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+    @media (max-width: 560px) { .stat-row { grid-template-columns: 1fr; } }
+    .stat-card { background: var(--danger-light); border-radius: 10px; padding: 16px; text-align: center; }
+    .stat-num { font-size: 28px; font-weight: 900; color: #C0392B; }
+    .stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; line-height: 1.4; }
+
+    /* INFO CASE */
+    .info-case { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 18px; margin: 12px 0; display: flex; gap: 12px; align-items: flex-start; }
+    .info-case-icon { font-size: 18px; flex-shrink: 0; }
+    .info-case-body { flex: 1; }
+    .info-case-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .info-case-text { font-size: 12px; color: var(--text-light); line-height: 1.6; }
+
+    /* CHECKLIST */
+    .checklist-group { margin-bottom: 16px; }
+    .checklist-group-title { font-size: 13px; font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; padding: 6px 12px; background: var(--primary-light); border-radius: 6px; }
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; font-size: 13px; padding: 8px 12px; background: var(--bg-gray); border-radius: 6px; }
+    .checklist li::before { content: '☐'; font-size: 16px; color: var(--primary); flex-shrink: 0; line-height: 1.3; }
+
+    /* REC BOX */
+    .rec-box { background: linear-gradient(135deg, var(--danger-light) 0%, #FFF8E1 100%); border: 2px solid var(--accent-dark); border-radius: 14px; padding: 24px 28px; margin: 20px 0; }
+    .rec-box h4 { font-size: 15px; font-weight: 800; color: #C0392B; margin-bottom: 14px; }
+    .rec-steps { counter-reset: rec; list-style: none; padding: 0; }
+    .rec-steps li { counter-increment: rec; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
+    .rec-steps li::before { content: counter(rec); width: 24px; height: 24px; border-radius: 50%; background: var(--danger); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+
+    /* CODE */
+    .code-block { background: var(--code-bg); border-radius: 10px; padding: 20px 24px; margin: 16px 0; overflow-x: auto; }
+    .code-block pre { color: #E2E8F0; font-family: 'Consolas','Monaco','Courier New',monospace; font-size: 13px; line-height: 1.7; white-space: pre; }
+    .code-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+    .code-key { color: var(--accent); }
+    .code-val { color: #68D391; }
+    .code-str { color: #FC8181; }
+    .code-comment { color: #718096; }
+
+    /* FOOTER */
+    footer { background: #1A2332; color: rgba(255,255,255,0.8); text-align: center; padding: 36px 24px; margin-top: 16px; }
+    footer .footer-logo { font-size: 22px; font-weight: 900; color: white; margin-bottom: 6px; }
+    footer .footer-logo span { color: var(--accent); }
+    footer p { font-size: 12px; opacity: 0.6; margin-bottom: 4px; }
+    [id] { scroll-margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Path<span>Link</span></div>
+  <div class="header-badge">NPO AI Lab — 内部共有資料</div>
+  <h1>NPOのための<br>AIリスク完全ガイド</h1>
+  <p class="subtitle">
+    情報漏洩・法的リスク・業務リスク・AIエージェントの注意点まで<br>
+    NPO現場のリアルな疑問に、データと事例で答えます
+  </p>
+  <div class="header-meta">調査日：2026年4月 ／ PathLink AI Lab</div>
+</header>
+
+<div class="container">
+
+  <!-- SUMMARY -->
+  <div class="summary-card">
+    <div class="summary-label">📋 この記事のサマリ</div>
+    <div class="summary-title">NPOがAIを使う前に知っておくべきリスクの全体像</div>
+    <ul class="summary-points">
+      <li>NPOの82%がAIを使っているが、AIポリシーを持つ団体はわずか10%。リスクへの備えが急務</li>
+      <li>無料プランはどのサービスも学習データとして利用される。設定確認と有料プラン検討が必要</li>
+      <li>受益者・DV被害者の情報はAIに入力してはいけない。NPO特有の機密情報を整理する</li>
+      <li>個人情報保護法・著作権など法的リスクも「知らなかった」では済まされない</li>
+      <li>Claude Codeなどのエージェント型AIは組織アカウント環境での利用に特別な注意が必要</li>
+      <li>チェックリストで自団体のリスク対策状況をすぐに確認できる</li>
+    </ul>
+    <div class="summary-meta">
+      <span class="summary-chip">👤 対象：NPOスタッフ全般</span>
+      <span class="summary-chip">⏱ 読了目安：15〜20分</span>
+      <span class="summary-chip">📅 2026年4月時点</span>
+    </div>
+    <div class="related-link">
+      📎 関連記事：
+      <a href="ai-service-guide.html">AIサービス選び完全ガイド（ChatGPT・Claude・Gemini・Copilot比較）→</a>
+      ／
+      <a href="ai-agent-environment-guide.html">AIエージェント環境整備ガイド →</a>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">📋 目次</div>
+    <ol>
+      <li><a href="#sec-overview">現状：なぜ今リスクを知るべきか</a></li>
+      <li><a href="#sec-leak">情報漏洩リスクと対策</a></li>
+      <li><a href="#sec-npo">NPO特有のリスク</a></li>
+      <li><a href="#sec-legal">法的・コンプライアンスリスク</a></li>
+      <li><a href="#sec-ops">業務リスク（ハルシネーション・依存）</a></li>
+      <li><a href="#sec-checklist">自団体のリスク判断チェックリスト</a></li>
+      <li><a href="#sec-agents">AIエージェント・Claude Codeを使う時の特別なリスク</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. 現状 -->
+  <div class="section" id="sec-overview">
+    <div class="section-header">
+      <span class="section-num">1</span>
+      <h2>現状：なぜ今、リスクを知るべきか</h2>
+    </div>
+    <p>AIツールは急速に普及しています。しかし多くのNPOで、リスクへの備えが追いついていないのが現実です。</p>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num">82%</div>
+        <div class="stat-label">のNPOがAIを<br>すでに利用している</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">10%</div>
+        <div class="stat-label">しかAIポリシーを<br>策定していない</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">+56%</div>
+        <div class="stat-label">2024年のAIインシデント<br>報告件数の増加率</div>
+      </div>
+    </div>
+    <p style="font-size: 12px; color: var(--text-light); margin-top: 4px;">出典：Whole Whale 2025年調査、Stanford AI Index Report 2025</p>
+    <div class="callout callout-danger" style="margin-top: 20px;">
+      <div class="callout-icon">🚨</div>
+      <div class="callout-body">
+        <div class="callout-title">IPA「情報セキュリティ10大脅威 2026」に初選出</div>
+        <p class="callout-text">
+          情報処理推進機構（IPA）が2026年1月に公表した「情報セキュリティ10大脅威」で、<strong>「AIの利用をめぐるサイバーリスク」が初めて第3位にランクイン</strong>しました。
+          もはやAIのリスクは無視できない段階に入っています。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 情報漏洩 -->
+  <div class="section" id="sec-leak">
+    <div class="section-header">
+      <span class="section-num">2</span>
+      <h2>情報漏洩リスクと対策</h2>
+    </div>
+    <h3>起こりうる2つのケース</h3>
+    <div class="risk-grid">
+      <div class="risk-card risk-card-high">
+        <div class="risk-label risk-label-high">ケース A ／ 高リスク</div>
+        <div class="risk-title">入力情報がAIの学習に使われる</div>
+        <div class="risk-desc">無料プランのAIに団体情報・個人情報を入力すると、その内容がAIの学習データとして使われ、別のユーザーへの回答に混入するリスクがあります。</div>
+      </div>
+      <div class="risk-card risk-card-high">
+        <div class="risk-label risk-label-high">ケース B ／ 高リスク</div>
+        <div class="risk-title">AIの出力に機密情報が紛れ込む</div>
+        <div class="risk-desc">AIが生成した文章をそのまま公開した結果、内部でしか知らない情報が ニュースレターやWebサイトに載ってしまうことがあります。</div>
+      </div>
+    </div>
+
+    <h3 class="h3-default">実際に起きた事例</h3>
+    <div class="info-case">
+      <div class="info-case-icon">⚡</div>
+      <div class="info-case-body">
+        <div class="info-case-title">Samsung Electronics（2023年）― 半導体機密情報の漏洩</div>
+        <div class="info-case-text">社内でChatGPTの利用を解禁して約20日間で3件の機密情報漏洩が発生。半導体の製造プログラムのソースコードや会議の録音データをAIに送っていたことが原因。その後、社内AIツールの利用を全面禁止に。</div>
+      </div>
+    </div>
+    <div class="info-case">
+      <div class="info-case-icon">⚡</div>
+      <div class="info-case-body">
+        <div class="info-case-title">ChatGPTのシステムバグ（2023年）― 他ユーザーの情報が閲覧可能に</div>
+        <div class="info-case-text">OpenAIのシステムバグにより、別のユーザーのチャット履歴・氏名・メールアドレス・支払い情報が一時的に閲覧できる状態に。サービス提供側のミスでも情報が漏れることがある、という教訓です。</div>
+      </div>
+    </div>
+
+    <h3 class="h3-default">各サービスのデータ利用ポリシー（重要）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="head-primary">サービス</th>
+            <th class="head-primary">無料プラン</th>
+            <th class="head-primary">有料チームプラン</th>
+            <th class="head-primary">オプトアウト方法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>ChatGPT</strong></td><td><span class="policy-warn">▲ デフォルトで学習利用</span></td><td><span class="policy-ok">✓ 学習利用なし</span></td><td>設定→データコントロール→「モデル改善」をOFF</td></tr>
+          <tr><td><strong>Gemini</strong></td><td><span class="policy-warn">▲ デフォルトで学習利用</span></td><td><span class="policy-ok">✓ 学習利用なし</span></td><td>「Geminiアクティビティ」設定でOFF（OFF後72時間保持）</td></tr>
+          <tr><td><strong>Claude</strong></td><td><span class="policy-warn">▲ 2025年9月〜 学習利用あり（オプトアウト可）</span></td><td><span class="policy-ok">✓ 学習利用なし</span></td><td>設定からオプトアウト可能（30日間保持）</td></tr>
+          <tr><td><strong>Copilot</strong></td><td><span class="policy-warn">▲ デフォルトで学習利用</span></td><td><span class="policy-ok">✓ 学習利用なし</span></td><td>設定から無効化可能</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <div class="callout-title">重要：無料プランは全サービスで要注意</div>
+        <p class="callout-text">無料プランではどのサービスも、デフォルトで入力データが学習に使われる設定になっています。団体として使う場合は<strong>オプトアウト設定を確認する</strong>か、<strong>有料の組織向けプランを利用する</strong>ことを強くおすすめします。</p>
+      </div>
+    </div>
+
+    <h3 class="h3-default">情報漏洩を防ぐ5つの基本対策</h3>
+    <div class="risk-grid">
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">① 入力禁止情報を決める</div>
+        <div style="font-size: 12px; color: var(--text-light);">「AIに入力してはいけない情報」をリスト化し、スタッフ全員に共有する</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">② 法人プランを使う</div>
+        <div style="font-size: 12px; color: var(--text-light);">有料の組織プランにすればデータが学習に使われない（NPO割引あり）</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">③ 匿名化してから入力</div>
+        <div style="font-size: 12px; color: var(--text-light);">「Aさん（50代女性）」のように個人を特定できない形に変えてから入力</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">④ 出力を必ず人間が確認</div>
+        <div style="font-size: 12px; color: var(--text-light);">AIの文章をそのまま公開しない。公開前に必ず内容を読み直す</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">⑤ 利用ルールを定める</div>
+        <div style="font-size: 12px; color: var(--text-light);">どのスタッフが何のツールを使っているか把握し、簡易ガイドラインを作る</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. NPO特有 -->
+  <div class="section" id="sec-npo">
+    <div class="section-header">
+      <span class="section-num">3</span>
+      <h2>NPO特有のリスク</h2>
+    </div>
+    <div class="callout callout-danger">
+      <div class="callout-icon">🛡️</div>
+      <div class="callout-body">
+        <div class="callout-title">NPOが扱う情報は「漏れたら取り返しがつかない」</div>
+        <p class="callout-text">DV被害者・虐待被害者・障害者・生活困窮者…NPOが扱う情報は、漏洩した場合の被害が<strong>不可逆的</strong>です。「AIに入力してはいけない情報」の定義が特に重要です。</p>
+      </div>
+    </div>
+    <h3 class="h3-default">情報の機密度と対応方針</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="head-primary">情報の種類</th><th class="head-primary">機密度</th><th class="head-primary">AIでの扱い方</th></tr></thead>
+        <tbody>
+          <tr><td>広報文・SNS投稿の下書き</td><td><span class="badge badge-green">低</span></td><td>AI活用に最適。積極的に使っていい</td></tr>
+          <tr><td>助成金申請書のドラフト</td><td><span class="badge badge-yellow">中</span></td><td>団体名・金額は匿名化。概要レベルなら可</td></tr>
+          <tr><td>ボランティアの連絡先一覧</td><td><span class="badge badge-yellow">中〜高</span></td><td>一覧データの入力は禁止。集計目的なら匿名化して可</td></tr>
+          <tr><td>財務データ（詳細な経理）</td><td><span class="badge badge-red">高</span></td><td>法人プラン＋匿名化が必須</td></tr>
+          <tr><td>受益者の氏名・住所・相談内容</td><td><span class="badge badge-red">高</span></td><td><strong>AIに入力してはならない</strong></td></tr>
+          <tr><td>DV被害者・虐待記録</td><td><span class="badge badge-red">極めて高</span></td><td><strong>AIへの入力を一切禁止</strong>。漏洩時の被害が甚大</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 class="h3-default">その他の注意点</h3>
+    <ul style="font-size: 14px; padding-left: 20px; margin-top: 8px;">
+      <li style="margin-bottom: 10px;"><strong>バイアスのリスク：</strong>支援対象者の選定や優先順位付けにAIを使うと、過去データのバイアスが再現され、特定の属性が不利に扱われる可能性がある</li>
+      <li style="margin-bottom: 10px;"><strong>助成金審査：</strong>AIで助成金審査を自動化すると、新規・小規模団体が不利になるバイアスが生まれるリスクがある</li>
+      <li style="margin-bottom: 10px;"><strong>ベンダースプロール：</strong>スタッフが個人判断で複数のAIツールを使い始めると、IT管理部門が把握できないセキュリティホールが生まれる</li>
+    </ul>
+  </div>
+
+  <!-- 4. 法的リスク -->
+  <div class="section" id="sec-legal">
+    <div class="section-header">
+      <span class="section-num">4</span>
+      <h2>法的・コンプライアンスリスク</h2>
+    </div>
+    <h3 class="h3-default">個人情報保護法</h3>
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚖️</div>
+      <div class="callout-body">
+        <div class="callout-title">個人情報保護委員会が異例の注意喚起（2023年）</div>
+        <p class="callout-text">個人情報保護委員会が「生成AIサービスに個人情報を含むプロンプトを入力する場合、その情報が機械学習に利用される可能性があることを十分に理解すること」と警告を発表しました。NPOも「知らなかった」では済まされません。</p>
+      </div>
+    </div>
+    <p style="font-size: 14px;">2026年には個人情報保護法の改正が審議予定で、悪質な違反行為には<strong>課徴金（罰金）制度が新設</strong>される見込みです。AI活用に関する組織内のルール整備が急務になっています。</p>
+    <h3 class="h3-default">著作権リスク</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="head-primary">フェーズ</th><th class="head-primary">著作権との関係</th></tr></thead>
+        <tbody>
+          <tr><td>AIの学習（情報解析）</td><td>著作権法第30条の4により、原則として著作権者の許可不要</td></tr>
+          <tr><td>AI生成物の<strong>公開・配布</strong></td><td>既存著作物との類似性・依拠性が認められれば<strong>著作権侵害に問われる可能性あり</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-info" style="margin-top: 16px;">
+      <div class="callout-icon">📋</div>
+      <div class="callout-body">
+        <div class="callout-title">AI事業者ガイドライン（総務省・経産省）を確認しよう</div>
+        <p class="callout-text">2025年3月に「AI事業者ガイドライン（第1.1版）」が公表されました。NPOを含むすべてのAI利用組織が対象です。助成元によってはAI利用に関する方針を定めているケースもあるため、申請前に確認しましょう。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 業務リスク -->
+  <div class="section" id="sec-ops">
+    <div class="section-header">
+      <span class="section-num">5</span>
+      <h2>業務リスク</h2>
+    </div>
+    <h3 class="h3-default">ハルシネーション（誤情報）への対処</h3>
+    <p>「ハルシネーション」とは、AIが事実に基づかない情報をもっともらしく出力する現象です。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="head-primary">業務シーン</th><th class="head-primary">ハルシネーションの具体例</th><th class="head-primary">対策</th></tr></thead>
+        <tbody>
+          <tr><td>助成金申請書の作成</td><td>存在しない統計データや調査結果を引用してしまう</td><td>数値・統計は必ず原典で確認。AIに「出典を明示して」と指示する</td></tr>
+          <tr><td>支援制度の案内文</td><td>制度の条件・金額・申請先が間違っていても気づかず配布</td><td>制度情報は公式サイトで必ず裏付け。AI生成の制度説明はそのまま使わない</td></tr>
+          <tr><td>理事会・報告書</td><td>財務分析や団体比較データに誤りが混入</td><td>重要な数値はAIに任せず、自分で計算・確認する</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-purple">
+      <div class="callout-icon">🧠</div>
+      <div class="callout-body">
+        <div class="callout-title">オートメーションバイアスに注意</div>
+        <p class="callout-text">「AIが言ったから正しい」という思考停止が最も危険です。AIはあくまでも「下書きを作るアシスタント」。<strong>最終判断と責任は常に人間が持つ</strong>という原則を組織内で共有してください。</p>
+      </div>
+    </div>
+    <h3 class="h3-default">AI依存による組織能力の低下</h3>
+    <p style="font-size: 14px;">文章作成・分析・企画立案をすべてAIに任せると、スタッフの思考力・専門性が低下するリスクがあります。特にNPOでは、現場感覚や支援対象者との信頼関係に基づく判断が不可欠であり、AIはそれを代替できません。「AIを使いながら、人間としての力も磨く」バランス感覚が重要です。</p>
+  </div>
+
+  <!-- 6. チェックリスト -->
+  <div class="section" id="sec-checklist">
+    <div class="section-header">
+      <span class="section-num">6</span>
+      <h2>自団体のリスク判断チェックリスト</h2>
+    </div>
+    <p>まずはこのチェックリストで、自分たちの現状を棚卸しましょう。「✗」が多いほど、対策が急務です。</p>
+    <div class="checklist-group">
+      <div class="checklist-group-title">🔒 基本設定の確認</div>
+      <ul class="checklist">
+        <li>利用しているAIサービスのデータ利用ポリシーを確認したか</li>
+        <li>オプトアウト設定（学習に使わない設定）を有効にしたか</li>
+        <li>スタッフが使っているAIツールをすべて把握しているか</li>
+      </ul>
+    </div>
+    <div class="checklist-group">
+      <div class="checklist-group-title">📋 入力情報の管理</div>
+      <ul class="checklist">
+        <li>「AIに入力してはいけない情報」のリストを作成したか</li>
+        <li>受益者・支援対象者の個人情報を入力しないルールを周知したか</li>
+        <li>匿名化・マスキングの方法をスタッフに共有したか</li>
+      </ul>
+    </div>
+    <div class="checklist-group">
+      <div class="checklist-group-title">✅ 出力情報の管理</div>
+      <ul class="checklist">
+        <li>AIの出力結果を必ず人間がチェックする運用にしているか</li>
+        <li>数値・統計・法令の引用は原典で裏付けを取っているか</li>
+        <li>助成金申請書など重要文書にAI生成物をそのまま使っていないか</li>
+      </ul>
+    </div>
+    <div class="checklist-group">
+      <div class="checklist-group-title">⚖️ 法的・倫理的対応</div>
+      <ul class="checklist">
+        <li>個人情報保護法との整合性を確認したか</li>
+        <li>助成元のAI利用に関する方針を確認したか</li>
+        <li>AI利用が団体のミッション・価値観と整合しているか検討したか</li>
+        <li>支援対象者に不利益が生じないか検討したか</li>
+      </ul>
+    </div>
+    <div class="callout callout-success">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body">
+        <div class="callout-title">全部一度にやらなくていい</div>
+        <p class="callout-text">まずは「入力禁止情報のリスト作成」と「オプトアウト設定の確認」の2つだけでも始めましょう。コミュニティでみんなの取り組みを共有しながら、少しずつ整備していきましょう。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. AIエージェント -->
+  <div class="section" id="sec-agents">
+    <div class="section-header">
+      <span class="section-num section-num-agent">7</span>
+      <h2>AIエージェント・Claude Codeを使う時の特別なリスク</h2>
+    </div>
+    <div class="callout callout-danger">
+      <div class="callout-icon">🤖</div>
+      <div class="callout-body">
+        <div class="callout-title">「AIエージェント」は、ただのチャットとは別物</div>
+        <p class="callout-text">ChatGPTやClaudeにテキストを入力して返答をもらうのが「チャット型AI」。一方で<strong>AIエージェント</strong>は、ファイルの読み書き・アプリの操作・コードの実行などを<strong>自律的に</strong>行います。Claude Code（デスクトップアプリ）はその代表例です。</p>
+      </div>
+    </div>
+    <h3>なぜ組織アカウントでの利用が問題になるのか</h3>
+    <p>AIエージェントは、ログイン中のアカウントに紐づくGoogleドライブ・メール・カレンダーなど、すべての情報にアクセスできてしまう可能性があります。このリスクへの対応として、<strong>組織アカウントでのAIエージェント利用に明示的なルールを設けるNPOが増えています</strong>。どの範囲まで許可するかを事前に決めておくことが重要です。</p>
+    <div class="risk-grid">
+      <div class="risk-card risk-card-high">
+        <div class="risk-label risk-label-high">リスク A ／ 情報アクセス</div>
+        <div class="risk-title">Googleドライブ内の機密ファイルを読み取られる</div>
+        <div class="risk-desc">Claude CodeにGoogle DriveのMCPを接続すると、エージェントはドライブ内の全ファイルを検索・閲覧できます。支援記録・財務資料・理事会資料など、組織の機密情報が渡ってしまう可能性があります。</div>
+      </div>
+      <div class="risk-card risk-card-high">
+        <div class="risk-label risk-label-high">リスク B ／ 意図しない操作</div>
+        <div class="risk-title">メール・カレンダーが自動操作される</div>
+        <div class="risk-desc">「メールの返信文を作って」と頼んだつもりが、エージェントがそのまま送信まで実行してしまうケースがあります。Gmail や Google カレンダーへの書き込み権限が付与されている場合、予期しない操作が起こりえます。</div>
+      </div>
+      <div class="risk-card risk-card-mid">
+        <div class="risk-label risk-label-mid">リスク C ／ コード実行</div>
+        <div class="risk-title">ローカルファイルの変更・削除が起こる</div>
+        <div class="risk-desc">Claude Codeはパソコン内のファイルを直接読み書き・削除できます。曖昧な指示を誤解し、必要なファイルを削除したり移動させてしまうことがあります。</div>
+      </div>
+      <div class="risk-card risk-card-mid">
+        <div class="risk-label risk-label-mid">リスク D ／ 情報の外部送信</div>
+        <div class="risk-title">入力したデータが外部AIに送られる</div>
+        <div class="risk-desc">エージェントが調査のためWebへアクセスしたり、外部APIを呼び出す際に、手元のデータの一部が外部サーバーに送信されることがあります。</div>
+      </div>
+    </div>
+    <h3 class="h3-default">Claude Code利用時の具体的な注意点</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="head-primary">場面</th><th class="head-primary">リスク</th><th class="head-primary">対策</th></tr></thead>
+        <tbody>
+          <tr><td>Google DriveのMCPを接続する</td><td>ドライブ内の全ファイルにアクセス可能になる</td><td><strong>業務専用の個人アカウント</strong>のみ接続。組織共有アカウントは禁止</td></tr>
+          <tr><td>GmailのMCPを接続する</td><td>メールの読み取り・送信まで実行される可能性</td><td>「下書き作成のみ」など<strong>権限を最小限</strong>に設定する</td></tr>
+          <tr><td>パソコン内フォルダを作業対象にする</td><td>意図しないファイルの変更・削除が起こる</td><td><strong>専用フォルダのみ</strong>を指定する</td></tr>
+          <tr><td>「全部やって」と指示する</td><td>確認なしに複数の操作が連続実行される</td><td>指示は<strong>1ステップずつ</strong>。実行前の確認を習慣化する</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rec-box">
+      <h4>🛡️ 組織として決めておくべき最低限ルール</h4>
+      <ol class="rec-steps">
+        <li><div><strong>組織共有アカウントでのエージェント利用を禁止する</strong><br><span style="font-size:13px;color:var(--text-light);">複数人が使うアカウントでAIエージェントを動かすことは禁止。個人の業務用アカウントのみで利用する。</span></div></li>
+        <li><div><strong>接続するツール（MCP）の権限を最小限に設定する</strong><br><span style="font-size:13px;color:var(--text-light);">「読み取りのみ」「下書き作成のみ」など、必要最小限の権限で接続する。使い終わったら接続を切る。</span></div></li>
+        <li><div><strong>AI作業フォルダを専用フォルダに限定する</strong><br><span style="font-size:13px;color:var(--text-light);">「AIエージェント作業用」専用フォルダを作成し、そのフォルダ外には触らせない運用にする。</span></div></li>
+        <li><div><strong>実行前のプレビュー・確認を必ず行う</strong><br><span style="font-size:13px;color:var(--text-light);">Claude Codeはファイル操作や送信の前に「確認を求める」設定ができます。この設定を必ずONにしておく。</span></div></li>
+        <li><div><strong>利用履歴・ログを定期的に確認する</strong><br><span style="font-size:13px;color:var(--text-light);">Googleアクティビティ履歴などを定期的に確認し、意図しないアクセスや操作がなかったか確認する。</span></div></li>
+      </ol>
+    </div>
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <div class="callout-title">「ゼロリスクは不可能」という前提で運用設計を</div>
+        <p class="callout-text">AIエージェントのリスクを完全になくすことはできません。しかし、<strong>権限の最小化・個人アカウントの分離・実行前確認の習慣化</strong>の3つを徹底するだけで、リスクを大幅に下げることができます。</p>
+      </div>
+    </div>
+    <div class="callout callout-info">
+      <div class="callout-icon">📎</div>
+      <div class="callout-body">
+        <div class="callout-title">安全な環境の作り方は別記事で詳しく解説しています</div>
+        <p class="callout-text">アカウント設計・フォルダ構成・CLAUDE.md・MCP権限管理・モニタリングの具体的な手順は、<a href="ai-agent-environment-guide.html" style="color:var(--primary);font-weight:700;">「AIエージェント環境整備ガイド」</a>をご覧ください。</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">Path<span>Link</span> AI Lab</div>
+  <p>NPO・社会福祉のための実践型AIコミュニティ</p>
+  <p>yoor.jp/door/Path_Link</p>
+  <div style="font-size:18px;margin-top:14px;">💛 💛</div>
+  <p style="margin-top:12px;font-size:11px;opacity:0.4;">© 2026 PathLink. 本資料はコミュニティ内部共有目的で作成しました。<br>料金・機能・ポリシーは各サービスにより随時変更されます。申込前に各社公式サイトをご確認ください。</p>
+</footer>
+
+</body>
+</html>

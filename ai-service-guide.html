@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NPOのためのAIサービス選び完全ガイド</title>
+  <style>
+    :root {
+      --primary: #1BB8CE;
+      --primary-dark: #1498AA;
+      --primary-light: #E6F7FA;
+      --accent: #FFD166;
+      --accent-dark: #E8B84B;
+      --danger: #FF6B6B;
+      --danger-light: #FFF0F0;
+      --success: #06D6A0;
+      --success-light: #E6FBF5;
+      --warning: #FFB347;
+      --warning-light: #FFF5E6;
+      --purple: #8B5CF6;
+      --purple-light: #F3F0FF;
+      --text: #2D3748;
+      --text-light: #718096;
+      --bg: #FFFFFF;
+      --bg-gray: #F7FBFC;
+      --border: #D0EEF4;
+      --code-bg: #1A2332;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+      color: var(--text); background: var(--bg-gray); line-height: 1.8; font-size: 16px;
+    }
+    header {
+      background: linear-gradient(135deg, #1A2332 0%, var(--primary-dark) 100%);
+      color: white; padding: 56px 24px 44px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    header::before {
+      content: ''; position: absolute; top: -80px; right: -80px;
+      width: 300px; height: 300px; background: rgba(27,184,206,0.12); border-radius: 50%;
+    }
+    header::after {
+      content: ''; position: absolute; bottom: -100px; left: -60px;
+      width: 260px; height: 260px; background: rgba(255,209,102,0.07); border-radius: 50%;
+    }
+    .logo { position: absolute; top: 20px; right: 24px; font-size: 22px; font-weight: 900; color: white; z-index: 2; }
+    .logo span { color: var(--accent); }
+    .header-badge {
+      display: inline-block; background: var(--primary); color: white;
+      font-size: 12px; font-weight: 700; padding: 4px 14px;
+      border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.05em;
+      position: relative; z-index: 1;
+    }
+    header h1 { font-size: clamp(20px, 3.5vw, 30px); font-weight: 800; line-height: 1.4; margin-bottom: 14px; position: relative; z-index: 1; }
+    header .subtitle { font-size: 14px; opacity: 0.85; max-width: 540px; margin: 0 auto 20px; position: relative; z-index: 1; line-height: 1.7; }
+    .header-meta { font-size: 12px; opacity: 0.6; z-index: 1; position: relative; }
+    .container { max-width: 880px; margin: 0 auto; padding: 0 16px 48px; }
+
+    /* SUMMARY */
+    .summary-card {
+      background: white; border-radius: 14px; padding: 28px 32px;
+      margin: 28px 0 0; box-shadow: 0 2px 12px rgba(27,184,206,0.08);
+      border-top: 4px solid var(--primary);
+    }
+    .summary-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); margin-bottom: 10px; }
+    .summary-title { font-size: 17px; font-weight: 800; margin-bottom: 14px; color: var(--text); }
+    .summary-points { list-style: none; padding: 0; margin-bottom: 16px; }
+    .summary-points li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin-bottom: 8px; line-height: 1.6; }
+    .summary-points li::before { content: '✓'; color: var(--primary); font-weight: 800; flex-shrink: 0; }
+    .summary-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+    .summary-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-light); background: var(--bg-gray); border-radius: 20px; padding: 4px 12px; }
+    .related-link { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-light); }
+    .related-link a { color: var(--primary); text-decoration: none; font-weight: 700; }
+    .related-link a:hover { text-decoration: underline; }
+
+    /* TOC */
+    .toc { background: white; border: 2px solid var(--border); border-radius: 14px; padding: 24px 28px; margin: 20px 0; }
+    .toc-title { font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .toc ol { padding-left: 18px; }
+    .toc li { margin-bottom: 5px; }
+    .toc a { color: var(--text); text-decoration: none; font-size: 13px; }
+    .toc a:hover { color: var(--primary); }
+
+    /* SECTION */
+    .section { background: white; border-radius: 14px; padding: 36px 36px; margin-bottom: 24px; box-shadow: 0 2px 10px rgba(27,184,206,0.06); }
+    @media (max-width: 560px) { .section { padding: 24px 18px; } }
+    .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--primary-light); }
+    .section-num { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: white; flex-shrink: 0; background: var(--primary); }
+    h2 { font-size: clamp(16px, 2.5vw, 20px); font-weight: 800; }
+    h3 { font-size: 16px; font-weight: 700; color: var(--primary-dark); margin: 26px 0 10px; display: flex; align-items: center; gap: 8px; }
+    h3::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; flex-shrink: 0; }
+    p { margin-bottom: 12px; font-size: 15px; }
+
+    /* CALLOUT */
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; align-items: flex-start; }
+    .callout-icon { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
+    .callout-body { flex: 1; }
+    .callout-title { font-weight: 700; font-size: 13px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .callout-text { font-size: 13px; line-height: 1.7; margin: 0; }
+    .callout-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+    .callout-info .callout-title { color: var(--primary-dark); }
+    .callout-warn { background: var(--warning-light); border-left: 4px solid var(--warning); }
+    .callout-warn .callout-title { color: #C47A00; }
+    .callout-success { background: var(--success-light); border-left: 4px solid var(--success); }
+    .callout-success .callout-title { color: #059669; }
+
+    /* TABLES */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 480px; }
+    thead tr { background: var(--primary); color: white; }
+    thead th { padding: 11px 14px; text-align: left; font-weight: 700; }
+    tbody tr:nth-child(even) { background: var(--bg-gray); }
+    tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+    .badge-red { background: #FEE2E2; color: #C0392B; }
+    .badge-yellow { background: #FEF3C7; color: #92400E; }
+    .badge-green { background: #D1FAE5; color: #065F46; }
+    .badge-blue { background: var(--primary-light); color: var(--primary-dark); }
+    .policy-ok { color: #059669; font-weight: 700; }
+    .policy-warn { color: #C47A00; font-weight: 700; }
+
+    /* SERVICE CARDS */
+    .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    @media (max-width: 560px) { .service-grid { grid-template-columns: 1fr; } }
+    .service-card { border-radius: 12px; padding: 18px; border: 2px solid var(--border); transition: border-color 0.2s; }
+    .service-card:hover { border-color: var(--primary); }
+    .service-logo { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .service-logo-gpt { color: #10A37F; }
+    .service-logo-claude { color: #D97706; }
+    .service-logo-gemini { color: #4285F4; }
+    .service-logo-copilot { color: #0078D4; }
+    .service-tagline { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .service-body { font-size: 12px; color: var(--text-light); line-height: 1.7; }
+    .service-tags { margin-top: 10px; }
+    .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin: 2px; }
+    .tag-green { background: #D1FAE5; color: #065F46; }
+    .tag-yellow { background: #FEF3C7; color: #92400E; }
+    .tag-blue { background: var(--primary-light); color: var(--primary-dark); }
+    .tag-purple { background: var(--purple-light); color: #6D28D9; }
+
+    /* REC BOX */
+    .rec-box { background: linear-gradient(135deg, var(--primary-light) 0%, #FFF8E1 100%); border: 2px solid var(--accent-dark); border-radius: 14px; padding: 24px 28px; margin: 20px 0; }
+    .rec-box h4 { font-size: 15px; font-weight: 800; color: var(--primary-dark); margin-bottom: 14px; }
+    .rec-steps { counter-reset: rec; list-style: none; padding: 0; }
+    .rec-steps li { counter-increment: rec; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
+    .rec-steps li::before { content: counter(rec); width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+
+    /* FOOTER */
+    footer { background: #1A2332; color: rgba(255,255,255,0.8); text-align: center; padding: 36px 24px; margin-top: 16px; }
+    footer .footer-logo { font-size: 22px; font-weight: 900; color: white; margin-bottom: 6px; }
+    footer .footer-logo span { color: var(--accent); }
+    footer p { font-size: 12px; opacity: 0.6; margin-bottom: 4px; }
+    [id] { scroll-margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Path<span>Link</span></div>
+  <div class="header-badge">NPO AI Lab — 内部共有資料</div>
+  <h1>NPOのための<br>AIサービス選び<br>完全ガイド</h1>
+  <p class="subtitle">
+    ChatGPT・Claude・Gemini・Copilot を NPO目線で徹底比較<br>
+    割引プラン・業務別おすすめ・導入ロードマップまで
+  </p>
+  <div class="header-meta">調査日：2026年4月 ／ PathLink AI Lab</div>
+</header>
+
+<div class="container">
+
+  <!-- SUMMARY -->
+  <div class="summary-card">
+    <div class="summary-label">📋 この記事のサマリ</div>
+    <div class="summary-title">NPOに合ったAIサービスの選び方と使い分けがわかる</div>
+    <ul class="summary-points">
+      <li>ChatGPT・Claude・Gemini・Copilot の特徴と得意分野を一覧で比較できる</li>
+      <li>助成金申請書はClaude、広報・SNSはChatGPT、Google環境ならGeminiなど業務別の推奨がわかる</li>
+      <li>NPO割引でGeminiは無料、ChatGPT・Claudeは最大75%オフで使えることを知る</li>
+      <li>プライバシーとデータ保護の観点で各サービスを比較できる</li>
+      <li>「まず何から始めるか」の5ステップロードマップで、今日から動き出せる</li>
+    </ul>
+    <div class="summary-meta">
+      <span class="summary-chip">👤 対象：NPOスタッフ全般・AI担当者</span>
+      <span class="summary-chip">⏱ 読了目安：10〜15分</span>
+      <span class="summary-chip">📅 2026年4月時点</span>
+    </div>
+    <div class="related-link">
+      📎 関連記事：
+      <a href="ai-risk-guide.html">AIリスク完全ガイド（情報漏洩・法的リスク・エージェントリスク）→</a>
+      ／
+      <a href="ai-agent-environment-guide.html">AIエージェント環境整備ガイド →</a>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">📋 目次</div>
+    <ol>
+      <li><a href="#sec-services">4大AIサービスの特徴比較</a></li>
+      <li><a href="#sec-privacy">プライバシー・データ保護比較</a></li>
+      <li><a href="#sec-npo-use">NPO業務別おすすめサービス</a></li>
+      <li><a href="#sec-pricing">NPO割引プラン一覧</a></li>
+      <li><a href="#sec-recommend">導入の進め方：一歩ずつ始めよう</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. サービス特徴 -->
+  <div class="section" id="sec-services">
+    <div class="section-header">
+      <span class="section-num">1</span>
+      <h2>4大AIサービスの特徴比較</h2>
+    </div>
+
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-logo service-logo-gpt">● ChatGPT（OpenAI）</div>
+        <div class="service-tagline">機能が最も多い、情報量も豊富</div>
+        <div class="service-body">
+          汎用性が最も高く、文章生成・画像生成（DALL-E）・Web検索・Deep Research（調査レポート自動生成）など機能の幅が広い。
+          日本語の情報やサポート資料も最も充実しており、「困ったらネット検索」が使いやすい。
+          カスタムAI（GPTs）で自分たちの業務専用AIも作れる。
+        </div>
+        <div class="service-tags">
+          <span class="tag tag-green">汎用性◎</span>
+          <span class="tag tag-green">画像生成◎</span>
+          <span class="tag tag-yellow">情報量◎</span>
+          <span class="tag tag-blue">Web検索○</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-logo service-logo-claude">● Claude（Anthropic）</div>
+        <div class="service-tagline">長文・報告書・助成金申請書に最強</div>
+        <div class="service-body">
+          日本語の質が最も高いと評価されることが多く、論理的な文章構成が得意。
+          20万トークン（本約1冊分）という長い文書を一度に処理できる。
+          安全性への配慮が手厚く、「間違えるとまずい」重要文書に向いている。
+          画像生成は非対応（テキスト特化）。
+        </div>
+        <div class="service-tags">
+          <span class="tag tag-green">日本語品質◎</span>
+          <span class="tag tag-green">長文処理◎</span>
+          <span class="tag tag-green">安全性◎</span>
+          <span class="tag tag-yellow">画像生成×</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-logo service-logo-gemini">● Gemini（Google）</div>
+        <div class="service-tagline">Googleツールと連携、無料で高機能</div>
+        <div class="service-body">
+          Gmail・Googleドキュメント・スプレッドシート・Google Meetと直接連携し、
+          既存のGoogle環境の中でそのままAIが使える。
+          Google検索との統合が強く、最新情報の取得が得意。
+          NPO向け無料版でエンタープライズグレードのデータ保護が使える点が大きな強み。
+        </div>
+        <div class="service-tags">
+          <span class="tag tag-green">Google連携◎</span>
+          <span class="tag tag-green">無料NPOプラン◎</span>
+          <span class="tag tag-blue">最新情報◎</span>
+          <span class="tag tag-yellow">日本語品質△</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-logo service-logo-copilot">● Copilot（Microsoft）</div>
+        <div class="service-tagline">Word・Excel・Teams内でそのまま使える</div>
+        <div class="service-body">
+          Word・Excel・PowerPoint・Outlook・Teamsの中で直接AIが使えるため、
+          「新しいツールを覚える手間ゼロ」で導入できる。
+          すでにMicrosoft 365を使っている団体には最も導入コストが低い。
+          Microsoft 365環境外でのメリットはあまりない。
+        </div>
+        <div class="service-tags">
+          <span class="tag tag-green">Office連携◎</span>
+          <span class="tag tag-blue">Teams連携◎</span>
+          <span class="tag tag-yellow">日本語品質△</span>
+          <span class="tag tag-yellow">汎用性△</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>日本語品質・得意分野まとめ</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>比較項目</th><th>ChatGPT</th><th>Claude</th><th>Gemini</th><th>Copilot</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>日本語品質</td><td><span class="badge badge-green">◎</span></td><td><span class="badge badge-green">◎◎</span></td><td><span class="badge badge-yellow">△</span></td><td><span class="badge badge-yellow">△</span></td></tr>
+          <tr><td>Web検索・最新情報</td><td><span class="badge badge-green">◎</span></td><td><span class="badge badge-yellow">○</span></td><td><span class="badge badge-green">◎</span></td><td><span class="badge badge-green">◎</span></td></tr>
+          <tr><td>長文処理</td><td><span class="badge badge-yellow">○</span></td><td><span class="badge badge-green">◎◎</span></td><td><span class="badge badge-green">◎</span></td><td><span class="badge badge-yellow">○</span></td></tr>
+          <tr><td>画像生成</td><td><span class="badge badge-green">◎</span></td><td><span class="badge badge-red">×</span></td><td><span class="badge badge-green">○</span></td><td><span class="badge badge-yellow">△</span></td></tr>
+          <tr><td>外部ツール連携</td><td>プラグイン多数</td><td>基本的なAPI連携</td><td>Google全サービス</td><td>Microsoft 365全製品</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2. プライバシー比較 -->
+  <div class="section" id="sec-privacy">
+    <div class="section-header">
+      <span class="section-num">2</span>
+      <h2>プライバシー・データ保護比較</h2>
+    </div>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">🏆</div>
+      <div class="callout-body">
+        <div class="callout-title">NPOに最もおすすめ：Google Workspace for Nonprofits（無料版）</div>
+        <p class="callout-text">
+          無料でエンタープライズグレードのデータ保護が使えます。最大2,000ユーザーまで無料で、GeminiアプリとNotebookLMも使用可能。
+          日本のNPO法人・公益社団法人・社会福祉法人なども対象です。
+        </p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>項目</th><th>ChatGPT</th><th>Claude</th><th>Gemini</th><th>Copilot</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>無料版の学習利用</td>
+            <td><span class="policy-warn">あり（要オプトアウト）</span></td>
+            <td><span class="policy-warn">あり（要オプトアウト）</span></td>
+            <td><span class="policy-warn">あり（要オプトアウト）</span></td>
+            <td><span class="policy-warn">あり（要オプトアウト）</span></td>
+          </tr>
+          <tr>
+            <td>有料チームプランの学習利用</td>
+            <td><span class="policy-ok">なし</span></td>
+            <td><span class="policy-ok">なし</span></td>
+            <td><span class="policy-ok">なし</span></td>
+            <td><span class="policy-ok">なし</span></td>
+          </tr>
+          <tr>
+            <td>NPO無料プランの保護</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="policy-ok">◎ エンタープライズグレード</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>日本のデータセンター</td>
+            <td>対応（Enterprise）</td>
+            <td>調整中</td>
+            <td>対応（Workspace）</td>
+            <td>対応（M365）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <div class="callout-title">無料プランは全サービスでオプトアウト確認が必須</div>
+        <p class="callout-text">
+          無料プランではどのサービスも、デフォルトで入力データが学習に使われる設定です。
+          団体として使う場合は<strong>オプトアウト設定を確認する</strong>か、<strong>有料の組織向けプランを利用する</strong>ことを強くおすすめします。
+          詳しくはリスク編をご確認ください。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 業務別おすすめ -->
+  <div class="section" id="sec-npo-use">
+    <div class="section-header">
+      <span class="section-num">3</span>
+      <h2>NPO業務別おすすめサービス</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>NPOでよくある業務</th><th>おすすめ</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>📝 助成金申請書の下書き</td><td><strong>Claude</strong></td><td>日本語品質◎、論理的構成◎、長文処理◎。Anthropicも代表的用途として推奨</td></tr>
+          <tr><td>📣 SNS・広報文の作成</td><td><strong>ChatGPT</strong></td><td>カジュアル〜フォーマルまでトーン調整が柔軟。DALL-Eで画像生成も可</td></tr>
+          <tr><td>📊 Excelデータの集計・分析</td><td><strong>Copilot</strong></td><td>Excel内でそのまま使える。新しいツールを覚えなくていい</td></tr>
+          <tr><td>📋 Googleスプレッドシート整理</td><td><strong>Gemini</strong></td><td>Googleスプレッドシート内でそのまま使える</td></tr>
+          <tr><td>📧 メール・返信文の下書き</td><td><strong>Gemini / Copilot</strong></td><td>Gmail連携（Gemini）・Outlook連携（Copilot）でメール内から直接使える</td></tr>
+          <tr><td>📖 議事録の要約・整理</td><td><strong>Claude / Gemini</strong></td><td>Claudeは長文要約◎。GeminiはGoogle Meet連携で議事録自動化が可能</td></tr>
+          <tr><td>🔍 制度・情報の調査</td><td><strong>ChatGPT / Gemini</strong></td><td>Web検索機能が強力。最新情報を取得しながら回答してくれる</td></tr>
+          <tr><td>📄 PDFや長文資料の読み込み</td><td><strong>Claude / Gemini</strong></td><td>長文ドキュメントの処理が得意。大量の資料を一度に読ませられる</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. NPO割引プラン -->
+  <div class="section" id="sec-pricing">
+    <div class="section-header">
+      <span class="section-num">4</span>
+      <h2>NPO割引プラン一覧</h2>
+    </div>
+
+    <p>
+      4大AIサービスすべてがNPO向け割引プログラムを提供しています。
+      2024〜2025年にかけて各社が相次いで新設・拡充しており、最大<strong>75%オフ</strong>で使えます。
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>サービス</th><th>NPO割引後の月額（1ユーザー）</th><th>割引率</th><th>申請先</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Google Workspace（無料版）</strong></td>
+            <td><span style="font-size: 18px; font-weight: 800; color: var(--success);">無料</span><br><small>最大2,000ユーザー</small></td>
+            <td><span class="badge badge-green">100%</span></td>
+            <td>Google for Nonprofits（日本対応）</td>
+          </tr>
+          <tr>
+            <td><strong>ChatGPT Business</strong></td>
+            <td>約$8〜10/月<br>（約1,200〜1,500円）</td>
+            <td><span class="badge badge-green">最大75%</span></td>
+            <td>OpenAI for Nonprofits / TechSoup経由</td>
+          </tr>
+          <tr>
+            <td><strong>Claude Team</strong></td>
+            <td>約$8/月<br>（約1,200円）</td>
+            <td><span class="badge badge-green">最大75%</span></td>
+            <td>Claude for Nonprofits / Goodstack経由</td>
+          </tr>
+          <tr>
+            <td><strong>Microsoft 365 Copilot</strong></td>
+            <td>約$25.50/月<br>（約3,825円）</td>
+            <td><span class="badge badge-yellow">15%</span></td>
+            <td>Microsoft非営利団体プログラム</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">📌</div>
+      <div class="callout-body">
+        <div class="callout-title">日本のNPO法人は申請できる？</div>
+        <p class="callout-text">
+          Google for NonprofitsとMicrosoftは日本のNPO法人に対応。
+          ChatGPT・Claudeも申請可能ですが、審査が必要です。
+          料金・条件は頻繁に変更されるため、申込前に各社公式サイトで最新情報を確認してください。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 導入の進め方 -->
+  <div class="section" id="sec-recommend">
+    <div class="section-header">
+      <span class="section-num">5</span>
+      <h2>導入の進め方：一歩ずつ始めよう</h2>
+    </div>
+
+    <div class="rec-box">
+      <h4>🗺️ NPO向け AI導入ロードマップ（推奨）</h4>
+      <ol class="rec-steps">
+        <li>
+          <div>
+            <strong>まず無料で試す（今すぐ）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">Googleアカウントを持っている方はGemini、あるいはClaudeの無料版から始めてみましょう。いきなり課金する必要はありません。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>リスク対策の最低限を整える（1〜2週間以内）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">「入力してはいけない情報リスト」を作り、スタッフで共有。オプトアウト設定も確認。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Google for Nonprofitsに申請する（1ヶ月以内）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">無料でエンタープライズ保護付きのAIが使えます。申請から承認まで数週間かかる場合があります。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>用途に合わせて有料プランを検討（3ヶ月後）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">助成金申請書中心ならClaudeのNPO割引、汎用性重視ならChatGPTのNPO割引を検討。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>組織としてのAIポリシーを策定する（半年以内）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">コミュニティで共有したノウハウをもとに、自団体のAIルールを文書化しましょう。</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <h3>初心者向け：どれから始めるべきか</h3>
+    <div class="service-grid">
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 18px; border-left: 4px solid #4285F4;">
+        <div style="font-size: 13px; font-weight: 700; color: #4285F4; margin-bottom: 6px;">Googleをすでに使っている方</div>
+        <div style="font-size: 13px;"><strong>Gemini</strong> から始めよう</div>
+        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">Googleアカウントがあればすぐ使える。無料NPOプランでデータも守られる</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 18px; border-left: 4px solid #D97706;">
+        <div style="font-size: 13px; font-weight: 700; color: #D97706; margin-bottom: 6px;">文章・申請書の品質を重視する方</div>
+        <div style="font-size: 13px;"><strong>Claude</strong> から始めよう</div>
+        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">助成金申請書・報告書の日本語品質が最高水準</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 18px; border-left: 4px solid #10A37F;">
+        <div style="font-size: 13px; font-weight: 700; color: #10A37F; margin-bottom: 6px;">広報・SNS・なんでも使いたい方</div>
+        <div style="font-size: 13px;"><strong>ChatGPT</strong> から始めよう</div>
+        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">機能が最多。困ったときの情報も一番多い</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 18px; border-left: 4px solid #0078D4;">
+        <div style="font-size: 13px; font-weight: 700; color: #0078D4; margin-bottom: 6px;">すでにMicrosoft 365を使っている方</div>
+        <div style="font-size: 13px;"><strong>Copilot</strong> から始めよう</div>
+        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">Word・Excelの中でそのまま使えて学習コストゼロ</div>
+      </div>
+    </div>
+
+    <div class="callout callout-success" style="margin-top: 24px;">
+      <div class="callout-icon">💬</div>
+      <div class="callout-body">
+        <div class="callout-title">迷ったら、コミュニティで聞いてみよう</div>
+        <p class="callout-text">
+          「どのサービスが自分の団体に合うか分からない」「試したけどうまくいかない」という声は、
+          コミュニティで共有してください。仲間の経験や事例を聞きながら、一緒に判断しましょう。
+          一人で考えなくていいのがコミュニティの強みです。
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">Path<span>Link</span> AI Lab</div>
+  <p>NPO・社会福祉のための実践型AIコミュニティ</p>
+  <p>yoor.jp/door/Path_Link</p>
+  <div style="font-size: 18px; margin-top: 14px;">💛 💛</div>
+  <p style="margin-top: 12px; font-size: 11px; opacity: 0.4;">© 2026 PathLink. 本資料はコミュニティ内部共有目的で作成しました。<br>料金・機能・ポリシーは各サービスにより随時変更されます。申込前に各社公式サイトをご確認ください。</p>
+</footer>
+
+</body>
+</html>
