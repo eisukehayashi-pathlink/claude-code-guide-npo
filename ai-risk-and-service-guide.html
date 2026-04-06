@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NPOのためのAIリスクとサービス選び完全ガイド</title>
+  <style>
+    :root {
+      --primary: #1BB8CE;
+      --primary-dark: #1498AA;
+      --primary-light: #E6F7FA;
+      --accent: #FFD166;
+      --accent-dark: #E8B84B;
+      --danger: #FF6B6B;
+      --danger-light: #FFF0F0;
+      --success: #06D6A0;
+      --success-light: #E6FBF5;
+      --warning: #FFB347;
+      --warning-light: #FFF5E6;
+      --purple: #8B5CF6;
+      --purple-light: #F3F0FF;
+      --text: #2D3748;
+      --text-light: #718096;
+      --bg: #FFFFFF;
+      --bg-gray: #F7FBFC;
+      --border: #D0EEF4;
+      --code-bg: #1A2332;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+      color: var(--text);
+      background: var(--bg-gray);
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, #1A2332 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 56px 24px 44px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 300px; height: 300px;
+      background: rgba(27,184,206,0.12);
+      border-radius: 50%;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -60px;
+      width: 260px; height: 260px;
+      background: rgba(255,209,102,0.07);
+      border-radius: 50%;
+    }
+    .logo {
+      position: absolute;
+      top: 20px; right: 24px;
+      font-size: 22px;
+      font-weight: 900;
+      color: white;
+      z-index: 2;
+    }
+    .logo span { color: var(--accent); }
+    .header-badge {
+      display: inline-block;
+      background: var(--danger);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+    header h1 {
+      font-size: clamp(20px, 3.5vw, 32px);
+      font-weight: 800;
+      line-height: 1.4;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    header .subtitle {
+      font-size: 14px;
+      opacity: 0.85;
+      max-width: 540px;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .header-meta { font-size: 12px; opacity: 0.6; z-index: 1; position: relative; }
+
+    /* ===== PART BANNER ===== */
+    .part-banner {
+      padding: 20px 24px;
+      margin: 32px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .part-banner-risk { background: linear-gradient(135deg, var(--danger) 0%, #C0392B 100%); color: white; border-radius: 12px; }
+    .part-banner-service { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border-radius: 12px; }
+    .part-num {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.85;
+    }
+    .part-title { font-size: clamp(16px, 2.5vw, 20px); font-weight: 800; }
+    .part-desc { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+    /* ===== LAYOUT ===== */
+    .container { max-width: 880px; margin: 0 auto; padding: 0 16px 48px; }
+
+    /* ===== TOC ===== */
+    .toc {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 28px 0;
+    }
+    .toc-title {
+      font-size: 13px; font-weight: 700; color: var(--primary);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+    .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+    @media (max-width: 560px) { .toc-grid { grid-template-columns: 1fr; } }
+    .toc-section { margin-bottom: 12px; }
+    .toc-section-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 6px;
+    }
+    .toc-section-label.risk { color: var(--danger); }
+    .toc-section-label.service { color: var(--primary); }
+    .toc ol { padding-left: 18px; }
+    .toc li { margin-bottom: 5px; }
+    .toc a { color: var(--text); text-decoration: none; font-size: 13px; }
+    .toc a:hover { color: var(--primary); }
+
+    /* ===== SECTION ===== */
+    .section {
+      background: white;
+      border-radius: 14px;
+      padding: 36px 36px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(27,184,206,0.06);
+    }
+    @media (max-width: 560px) { .section { padding: 24px 18px; } }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    .section-num {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800; color: white;
+      flex-shrink: 0;
+    }
+    .num-risk { background: var(--danger); }
+    .num-service { background: var(--primary); }
+    h2 { font-size: clamp(16px, 2.5vw, 20px); font-weight: 800; }
+    h3 {
+      font-size: 16px; font-weight: 700; color: var(--primary-dark);
+      margin: 26px 0 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    h3::before {
+      content: '';
+      display: inline-block;
+      width: 4px; height: 16px;
+      background: var(--primary);
+      border-radius: 2px; flex-shrink: 0;
+    }
+    h3.danger-heading { color: #C0392B; }
+    h3.danger-heading::before { background: var(--danger); }
+    p { margin-bottom: 12px; font-size: 15px; }
+
+    /* ===== CALLOUT ===== */
+    .callout {
+      border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
+    .callout-body { flex: 1; }
+    .callout-title { font-weight: 700; font-size: 13px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .callout-text { font-size: 13px; line-height: 1.7; margin: 0; }
+    .callout-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+    .callout-info .callout-title { color: var(--primary-dark); }
+    .callout-warn { background: var(--warning-light); border-left: 4px solid var(--warning); }
+    .callout-warn .callout-title { color: #C47A00; }
+    .callout-danger { background: var(--danger-light); border-left: 4px solid var(--danger); }
+    .callout-danger .callout-title { color: #C0392B; }
+    .callout-success { background: var(--success-light); border-left: 4px solid var(--success); }
+    .callout-success .callout-title { color: #059669; }
+    .callout-purple { background: var(--purple-light); border-left: 4px solid var(--purple); }
+    .callout-purple .callout-title { color: #6D28D9; }
+
+    /* ===== TABLES ===== */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 480px; }
+    thead tr { background: var(--primary); color: white; }
+    thead th { padding: 11px 14px; text-align: left; font-weight: 700; }
+    thead th.danger-head { background: var(--danger); }
+    tbody tr:nth-child(even) { background: var(--bg-gray); }
+    tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: 700;
+    }
+    .badge-red { background: #FEE2E2; color: #C0392B; }
+    .badge-yellow { background: #FEF3C7; color: #92400E; }
+    .badge-green { background: #D1FAE5; color: #065F46; }
+    .badge-blue { background: var(--primary-light); color: var(--primary-dark); }
+
+    /* ===== RISK CARDS ===== */
+    .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    @media (max-width: 560px) { .risk-grid { grid-template-columns: 1fr; } }
+    .risk-card {
+      border-radius: 10px; padding: 16px 18px;
+      border: 1.5px solid;
+    }
+    .risk-card-high { border-color: var(--danger); background: var(--danger-light); }
+    .risk-card-mid { border-color: var(--warning); background: var(--warning-light); }
+    .risk-card-low { border-color: var(--success); background: var(--success-light); }
+    .risk-label {
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 6px;
+    }
+    .risk-label-high { color: #C0392B; }
+    .risk-label-mid { color: #C47A00; }
+    .risk-label-low { color: #059669; }
+    .risk-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .risk-desc { font-size: 12px; color: var(--text-light); line-height: 1.6; }
+
+    /* ===== CHECKLIST ===== */
+    .checklist-section { margin: 16px 0; }
+    .checklist-group { margin-bottom: 16px; }
+    .checklist-group-title {
+      font-size: 13px; font-weight: 700; color: var(--primary-dark);
+      margin-bottom: 8px; padding: 6px 12px;
+      background: var(--primary-light); border-radius: 6px;
+    }
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 8px; font-size: 13px; padding: 8px 12px;
+      background: var(--bg-gray); border-radius: 6px;
+    }
+    .checklist li::before {
+      content: '☐'; font-size: 16px; color: var(--primary);
+      flex-shrink: 0; line-height: 1.3;
+    }
+
+    /* ===== SERVICE CARDS ===== */
+    .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    @media (max-width: 560px) { .service-grid { grid-template-columns: 1fr; } }
+    .service-card {
+      border-radius: 12px; padding: 18px;
+      border: 2px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .service-card:hover { border-color: var(--primary); }
+    .service-logo {
+      font-size: 13px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.05em; margin-bottom: 8px;
+    }
+    .service-logo-gpt { color: #10A37F; }
+    .service-logo-claude { color: #D97706; }
+    .service-logo-gemini { color: #4285F4; }
+    .service-logo-copilot { color: #0078D4; }
+    .service-tagline { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .service-body { font-size: 12px; color: var(--text-light); line-height: 1.7; }
+    .service-tags { margin-top: 10px; }
+    .tag {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px; margin: 2px;
+    }
+    .tag-green { background: #D1FAE5; color: #065F46; }
+    .tag-yellow { background: #FEF3C7; color: #92400E; }
+    .tag-blue { background: var(--primary-light); color: var(--primary-dark); }
+    .tag-purple { background: var(--purple-light); color: #6D28D9; }
+
+    /* ===== STATS ===== */
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+    @media (max-width: 560px) { .stat-row { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: var(--primary-light); border-radius: 10px;
+      padding: 16px; text-align: center;
+    }
+    .stat-num { font-size: 28px; font-weight: 900; color: var(--primary-dark); }
+    .stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; line-height: 1.4; }
+
+    /* ===== INFO BUBBLE ===== */
+    .info-case {
+      background: white; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 14px 18px; margin: 12px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .info-case-icon { font-size: 18px; flex-shrink: 0; }
+    .info-case-body { flex: 1; }
+    .info-case-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .info-case-text { font-size: 12px; color: var(--text-light); line-height: 1.6; }
+
+    /* ===== DATA POLICY TABLE ===== */
+    .policy-ok { color: #059669; font-weight: 700; }
+    .policy-warn { color: #C47A00; font-weight: 700; }
+    .policy-ng { color: #C0392B; font-weight: 700; }
+
+    /* ===== RECOMMENDATION BOX ===== */
+    .rec-box {
+      background: linear-gradient(135deg, var(--primary-light) 0%, #FFF8E1 100%);
+      border: 2px solid var(--accent-dark);
+      border-radius: 14px; padding: 24px 28px; margin: 20px 0;
+    }
+    .rec-box h4 { font-size: 15px; font-weight: 800; color: var(--primary-dark); margin-bottom: 14px; }
+    .rec-steps { counter-reset: rec; list-style: none; padding: 0; }
+    .rec-steps li {
+      counter-increment: rec;
+      display: flex; gap: 12px; align-items: flex-start;
+      margin-bottom: 12px; font-size: 14px;
+    }
+    .rec-steps li::before {
+      content: counter(rec);
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--primary); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #1A2332; color: rgba(255,255,255,0.8);
+      text-align: center; padding: 36px 24px; margin-top: 16px;
+    }
+    footer .footer-logo { font-size: 22px; font-weight: 900; color: white; margin-bottom: 6px; }
+    footer .footer-logo span { color: var(--accent); }
+    footer p { font-size: 12px; opacity: 0.6; margin-bottom: 4px; }
+    footer .hearts { font-size: 18px; margin-top: 14px; }
+
+    [id] { scroll-margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Path<span>Link</span></div>
+  <div class="header-badge">NPO AI Lab — 内部共有資料</div>
+  <h1>NPOのための<br>AIリスクとサービス選び<br>完全ガイド</h1>
+  <p class="subtitle">
+    「どのAIを使えばいい？」「情報漏れが怖い…」<br>
+    現場のリアルな疑問に、データと事例で答えます。
+  </p>
+  <div class="header-meta">調査日：2026年4月 ／ PathLink AI Lab</div>
+</header>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">📋 目次</div>
+    <div class="toc-grid">
+      <div class="toc-section">
+        <div class="toc-section-label risk">Part 1 ／ AIリスク</div>
+        <ol>
+          <li><a href="#sec-overview">現状：なぜ今リスクを知るべきか</a></li>
+          <li><a href="#sec-leak">情報漏洩リスクと対策</a></li>
+          <li><a href="#sec-npo">NPO特有のリスク</a></li>
+          <li><a href="#sec-legal">法的リスク</a></li>
+          <li><a href="#sec-ops">業務リスク</a></li>
+          <li><a href="#sec-checklist">自団体のリスク判断チェックリスト</a></li>
+        </ol>
+      </div>
+      <div class="toc-section">
+        <div class="toc-section-label service">Part 2 ／ サービス選び</div>
+        <ol>
+          <li><a href="#sec-services">4大AIサービスの特徴比較</a></li>
+          <li><a href="#sec-privacy">プライバシー・データ保護比較</a></li>
+          <li><a href="#sec-npo-use">NPO業務別おすすめ</a></li>
+          <li><a href="#sec-pricing">NPO割引プラン一覧</a></li>
+          <li><a href="#sec-recommend">導入の進め方</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       PART 1: RISK
+       ============================== -->
+  <div class="part-banner part-banner-risk">
+    <div>
+      <div class="part-num">Part 1</div>
+      <div class="part-title">AIを使う前に知っておくべきリスク</div>
+      <div class="part-desc">情報漏洩・法的リスク・業務リスク・NPO特有の注意点を整理しました</div>
+    </div>
+  </div>
+
+  <!-- 1. 現状 -->
+  <div class="section" id="sec-overview">
+    <div class="section-header">
+      <span class="section-num num-risk">1</span>
+      <h2>現状：なぜ今、リスクを知るべきか</h2>
+    </div>
+
+    <p>
+      AIツールは急速に普及しています。しかし多くのNPOで、リスクへの備えが追いついていないのが現実です。
+    </p>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num">82%</div>
+        <div class="stat-label">のNPOがAIを<br>すでに利用している</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">10%</div>
+        <div class="stat-label">しかAIポリシーを<br>策定していない</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">+56%</div>
+        <div class="stat-label">2024年のAIインシデント<br>報告件数の増加率</div>
+      </div>
+    </div>
+    <p style="font-size: 12px; color: var(--text-light); margin-top: 4px;">出典：Whole Whale 2025年調査、Stanford AI Index Report 2025</p>
+
+    <div class="callout callout-danger" style="margin-top: 20px;">
+      <div class="callout-icon">🚨</div>
+      <div class="callout-body">
+        <div class="callout-title">IPA「情報セキュリティ10大脅威 2026」に初選出</div>
+        <p class="callout-text">
+          情報処理推進機構（IPA）が2026年1月に公表した「情報セキュリティ10大脅威」で、<strong>「AIの利用をめぐるサイバーリスク」が初めて第3位にランクイン</strong>しました。
+          もはやAIのリスクは無視できない段階に入っています。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 情報漏洩 -->
+  <div class="section" id="sec-leak">
+    <div class="section-header">
+      <span class="section-num num-risk">2</span>
+      <h2>情報漏洩リスクと対策</h2>
+    </div>
+
+    <h3 class="danger-heading">起こりうる2つのケース</h3>
+
+    <div class="risk-grid">
+      <div class="risk-card risk-card-high">
+        <div class="risk-label risk-label-high">ケース A ／ 高リスク</div>
+        <div class="risk-title">入力情報がAIの学習に使われる</div>
+        <div class="risk-desc">
+          無料プランのAIに団体情報・個人情報を入力すると、その内容がAIの学習データとして使われ、
+          別のユーザーへの回答に混入するリスクがあります。
+          「誰かの質問への答えに、うちの利用者名が出てきた」という事態が起こりえます。
+        </div>
+      </div>
+      <div class="risk-card risk-card-high">
+        <div class="risk-label risk-label-high">ケース B ／ 高リスク</div>
+        <div class="risk-title">AIの出力に機密情報が紛れ込む</div>
+        <div class="risk-desc">
+          AIが生成した文章をそのまま公開した結果、
+          内部でしか知らない情報（支援対象者の状況・財務情報など）が
+          ニュースレターやWebサイトに載ってしまうことがあります。
+        </div>
+      </div>
+    </div>
+
+    <h3>実際に起きた事例</h3>
+
+    <div class="info-case">
+      <div class="info-case-icon">⚡</div>
+      <div class="info-case-body">
+        <div class="info-case-title">Samsung Electronics（2023年）― 半導体機密情報の漏洩</div>
+        <div class="info-case-text">
+          社内でChatGPTの利用を解禁して約20日間で3件の機密情報漏洩が発生。
+          半導体の製造プログラムのソースコードや会議の録音データをAIに送っていたことが原因。
+          その後、社内AIツールの利用を全面禁止に。
+        </div>
+      </div>
+    </div>
+
+    <div class="info-case">
+      <div class="info-case-icon">⚡</div>
+      <div class="info-case-body">
+        <div class="info-case-title">ChatGPTのシステムバグ（2023年）― 他ユーザーの情報が閲覧可能に</div>
+        <div class="info-case-text">
+          OpenAIのシステムバグにより、別のユーザーのチャット履歴・氏名・メールアドレス・支払い情報が一時的に閲覧できる状態に。
+          サービス提供側のミスでも情報が漏れることがある、という教訓です。
+        </div>
+      </div>
+    </div>
+
+    <h3>各サービスのデータ利用ポリシー（重要）</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>サービス</th>
+            <th>無料プラン</th>
+            <th>有料チームプラン</th>
+            <th>オプトアウト方法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ChatGPT</strong></td>
+            <td><span class="policy-warn">▲ デフォルトで学習利用</span></td>
+            <td><span class="policy-ok">✓ 学習利用なし</span></td>
+            <td>設定→データコントロール→「モデル改善」をOFF</td>
+          </tr>
+          <tr>
+            <td><strong>Gemini</strong></td>
+            <td><span class="policy-warn">▲ デフォルトで学習利用</span></td>
+            <td><span class="policy-ok">✓ 学習利用なし</span></td>
+            <td>「Geminiアクティビティ」設定でOFF（OFF後72時間保持）</td>
+          </tr>
+          <tr>
+            <td><strong>Claude</strong></td>
+            <td><span class="policy-warn">▲ 2025年9月〜 学習利用あり<br>（オプトアウト可）</span></td>
+            <td><span class="policy-ok">✓ 学習利用なし</span></td>
+            <td>設定からオプトアウト可能（30日間保持）</td>
+          </tr>
+          <tr>
+            <td><strong>Copilot</strong></td>
+            <td><span class="policy-warn">▲ デフォルトで学習利用</span></td>
+            <td><span class="policy-ok">✓ 学習利用なし</span></td>
+            <td>設定から無効化可能</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <div class="callout-title">重要：無料プランは全サービスで要注意</div>
+        <p class="callout-text">
+          無料プランではどのサービスも、デフォルトで入力データが学習に使われる設定になっています。
+          団体として使う場合は<strong>オプトアウト設定を確認する</strong>か、<strong>有料の組織向けプランを利用する</strong>ことを強くおすすめします。
+        </p>
+      </div>
+    </div>
+
+    <h3>情報漏洩を防ぐ5つの基本対策</h3>
+    <div class="risk-grid">
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">① 入力禁止情報を決める</div>
+        <div style="font-size: 12px; color: var(--text-light);">「AIに入力してはいけない情報」をリスト化し、スタッフ全員に共有する</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">② 法人プランを使う</div>
+        <div style="font-size: 12px; color: var(--text-light);">有料の組織プランにすればデータが学習に使われない（NPO割引あり）</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">③ 匿名化してから入力</div>
+        <div style="font-size: 12px; color: var(--text-light);">「Aさん（50代女性）」のように個人を特定できない形に変えてから入力</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">④ 出力を必ず人間が確認</div>
+        <div style="font-size: 12px; color: var(--text-light);">AIの文章をそのまま公開しない。公開前に必ず内容を読み直す</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 14px 16px; border-left: 4px solid var(--primary);">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">⑤ 利用ルールを定める</div>
+        <div style="font-size: 12px; color: var(--text-light);">どのスタッフが何のツールを使っているか把握し、簡易ガイドラインを作る</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. NPO特有 -->
+  <div class="section" id="sec-npo">
+    <div class="section-header">
+      <span class="section-num num-risk">3</span>
+      <h2>NPO特有のリスク</h2>
+    </div>
+
+    <div class="callout callout-danger">
+      <div class="callout-icon">🛡️</div>
+      <div class="callout-body">
+        <div class="callout-title">NPOが扱う情報は「漏れたら取り返しがつかない」</div>
+        <p class="callout-text">
+          DV被害者・虐待被害者・障害者・生活困窮者…NPOが扱う情報は、漏洩した場合の被害が<strong>不可逆的</strong>です。
+          一般企業の情報漏洩とは質的に異なる深刻さがあります。「AIに入力してはいけない情報」の定義が特に重要です。
+        </p>
+      </div>
+    </div>
+
+    <h3>情報の機密度と対応方針</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>情報の種類</th>
+            <th>機密度</th>
+            <th>AIでの扱い方</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>広報文・SNS投稿の下書き</td>
+            <td><span class="badge badge-green">低</span></td>
+            <td>AI活用に最適。積極的に使っていい</td>
+          </tr>
+          <tr>
+            <td>助成金申請書のドラフト</td>
+            <td><span class="badge badge-yellow">中</span></td>
+            <td>団体名・金額は匿名化。概要レベルなら可</td>
+          </tr>
+          <tr>
+            <td>ボランティアの連絡先一覧</td>
+            <td><span class="badge badge-yellow">中〜高</span></td>
+            <td>一覧データの入力は禁止。集計目的なら匿名化して可</td>
+          </tr>
+          <tr>
+            <td>財務データ（詳細な経理）</td>
+            <td><span class="badge badge-red">高</span></td>
+            <td>法人プラン＋匿名化が必須</td>
+          </tr>
+          <tr>
+            <td>受益者の氏名・住所・相談内容</td>
+            <td><span class="badge badge-red">高</span></td>
+            <td><strong>AIに入力してはならない</strong></td>
+          </tr>
+          <tr>
+            <td>DV被害者・虐待記録</td>
+            <td><span class="badge badge-red">極めて高</span></td>
+            <td><strong>AIへの入力を一切禁止</strong>。漏洩時の被害が甚大</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>その他の注意点</h3>
+    <ul style="font-size: 14px; padding-left: 20px; margin-top: 8px;">
+      <li style="margin-bottom: 10px;"><strong>バイアスのリスク：</strong>支援対象者の選定や優先順位付けにAIを使うと、過去データのバイアスが再現され、特定の属性（国籍・障害・年齢等）が不利に扱われる可能性がある</li>
+      <li style="margin-bottom: 10px;"><strong>助成金審査：</strong>AIで助成金審査を自動化すると、新規・小規模団体が不利になるバイアスが生まれるリスクがある（既存採択団体優遇）</li>
+      <li style="margin-bottom: 10px;"><strong>ベンダースプロール：</strong>スタッフが個人判断で複数のAIツールを使い始めると、IT管理部門が把握できないセキュリティホールが生まれる</li>
+    </ul>
+  </div>
+
+  <!-- 4. 法的リスク -->
+  <div class="section" id="sec-legal">
+    <div class="section-header">
+      <span class="section-num num-risk">4</span>
+      <h2>法的・コンプライアンスリスク</h2>
+    </div>
+
+    <h3>個人情報保護法</h3>
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚖️</div>
+      <div class="callout-body">
+        <div class="callout-title">個人情報保護委員会が異例の注意喚起（2023年）</div>
+        <p class="callout-text">
+          個人情報保護委員会が「生成AIサービスに個人情報を含むプロンプトを入力する場合、その情報が機械学習に利用される可能性があることを十分に理解すること」と警告を発表しました。
+          NPOも「知らなかった」では済まされません。
+        </p>
+      </div>
+    </div>
+    <p style="font-size: 14px;">
+      さらに2026年には個人情報保護法の改正が審議予定で、悪質な違反行為には<strong>課徴金（罰金）制度が新設</strong>される見込みです。
+      AI活用に関する組織内のルール整備が急務になっています。
+    </p>
+
+    <h3>著作権リスク</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>フェーズ</th><th>著作権との関係</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AIの学習（情報解析）</td>
+            <td>著作権法第30条の4により、原則として著作権者の許可不要</td>
+          </tr>
+          <tr>
+            <td>AI生成物の<strong>公開・配布</strong></td>
+            <td>既存著作物との類似性・依拠性が認められれば<strong>著作権侵害に問われる可能性あり</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 13px; color: var(--text-light);">
+      ※ 2026年2月時点で、日本では生成AIの著作権侵害に関する確定判決はまだ出ていません。状況を継続的に確認することが重要です。
+    </p>
+
+    <div class="callout callout-info" style="margin-top: 16px;">
+      <div class="callout-icon">📋</div>
+      <div class="callout-body">
+        <div class="callout-title">AI事業者ガイドライン（総務省・経産省）を確認しよう</div>
+        <p class="callout-text">
+          2025年3月に「AI事業者ガイドライン（第1.1版）」が公表されました。NPOを含むすべてのAI利用組織が対象です。
+          助成元によってはAI利用に関する方針を定めているケースもあるため、申請前に確認しましょう。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 業務リスク -->
+  <div class="section" id="sec-ops">
+    <div class="section-header">
+      <span class="section-num num-risk">5</span>
+      <h2>業務リスク</h2>
+    </div>
+
+    <h3>ハルシネーション（誤情報）への対処</h3>
+    <p>
+      「ハルシネーション」とは、AIが事実に基づかない情報をもっともらしく出力する現象です。
+      NPO業務で特に注意が必要なシーンを整理します。
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>業務シーン</th><th>ハルシネーションの具体例</th><th>対策</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>助成金申請書の作成</td>
+            <td>存在しない統計データや調査結果を引用してしまう</td>
+            <td>数値・統計は必ず原典で確認。AIに「出典を明示して」と指示する</td>
+          </tr>
+          <tr>
+            <td>支援制度の案内文</td>
+            <td>制度の条件・金額・申請先が間違っていても気づかず配布</td>
+            <td>制度情報は公式サイトで必ず裏付け。AI生成の制度説明はそのまま使わない</td>
+          </tr>
+          <tr>
+            <td>理事会・報告書</td>
+            <td>財務分析や団体比較データに誤りが混入</td>
+            <td>重要な数値はAIに任せず、自分で計算・確認する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-purple">
+      <div class="callout-icon">🧠</div>
+      <div class="callout-body">
+        <div class="callout-title">オートメーションバイアスに注意</div>
+        <p class="callout-text">
+          「AIが言ったから正しい」という思考停止が最も危険です。
+          AIはあくまでも「下書きを作るアシスタント」。
+          <strong>最終判断と責任は常に人間が持つ</strong>という原則を組織内で共有してください。
+        </p>
+      </div>
+    </div>
+
+    <h3>AI依存による組織能力の低下</h3>
+    <p style="font-size: 14px;">
+      文章作成・分析・企画立案をすべてAIに任せると、スタッフの思考力・専門性が低下するリスクがあります。
+      特にNPOでは、現場感覚や支援対象者との信頼関係に基づく判断が不可欠であり、AIはそれを代替できません。
+      「AIを使いながら、人間としての力も磨く」バランス感覚が重要です。
+    </p>
+  </div>
+
+  <!-- 6. チェックリスト -->
+  <div class="section" id="sec-checklist">
+    <div class="section-header">
+      <span class="section-num num-risk">6</span>
+      <h2>自団体のリスク判断チェックリスト</h2>
+    </div>
+
+    <p>まずはこのチェックリストで、自分たちの現状を棚卸しましょう。「✗」が多いほど、対策が急務です。</p>
+
+    <div class="checklist-section">
+      <div class="checklist-group">
+        <div class="checklist-group-title">🔒 基本設定の確認</div>
+        <ul class="checklist">
+          <li>利用しているAIサービスのデータ利用ポリシーを確認したか</li>
+          <li>オプトアウト設定（学習に使わない設定）を有効にしたか</li>
+          <li>スタッフが使っているAIツールをすべて把握しているか</li>
+        </ul>
+      </div>
+      <div class="checklist-group">
+        <div class="checklist-group-title">📋 入力情報の管理</div>
+        <ul class="checklist">
+          <li>「AIに入力してはいけない情報」のリストを作成したか</li>
+          <li>受益者・支援対象者の個人情報を入力しないルールを周知したか</li>
+          <li>匿名化・マスキングの方法をスタッフに共有したか</li>
+        </ul>
+      </div>
+      <div class="checklist-group">
+        <div class="checklist-group-title">✅ 出力情報の管理</div>
+        <ul class="checklist">
+          <li>AIの出力結果を必ず人間がチェックする運用にしているか</li>
+          <li>数値・統計・法令の引用は原典で裏付けを取っているか</li>
+          <li>助成金申請書など重要文書にAI生成物をそのまま使っていないか</li>
+        </ul>
+      </div>
+      <div class="checklist-group">
+        <div class="checklist-group-title">⚖️ 法的・倫理的対応</div>
+        <ul class="checklist">
+          <li>個人情報保護法との整合性を確認したか</li>
+          <li>助成元のAI利用に関する方針を確認したか</li>
+          <li>AI利用が団体のミッション・価値観と整合しているか検討したか</li>
+          <li>支援対象者に不利益が生じないか検討したか</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body">
+        <div class="callout-title">全部一度にやらなくていい</div>
+        <p class="callout-text">
+          まずは「入力禁止情報のリスト作成」と「オプトアウト設定の確認」の2つだけでも始めましょう。
+          コミュニティでみんなの取り組みを共有しながら、少しずつ整備していきましょう。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       PART 2: SERVICE
+       ============================== -->
+  <div class="part-banner part-banner-service">
+    <div>
+      <div class="part-num">Part 2</div>
+      <div class="part-title">AIサービスの特徴と使い分け</div>
+      <div class="part-desc">ChatGPT・Claude・Gemini・Copilot を NPO目線で徹底比較</div>
+    </div>
+  </div>
+
+  <!-- 7. サービス特徴 -->
+  <div class="section" id="sec-services">
+    <div class="section-header">
+      <span class="section-num num-service">7</span>
+      <h2>4大AIサービスの特徴比較</h2>
+    </div>
+
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-logo service-logo-gpt">● ChatGPT（OpenAI）</div>
+        <div class="service-tagline">機能が最も多い、情報量も豊富</div>
+        <div class="service-body">
+          汎用性が最も高く、文章生成・画像生成（DALL-E）・Web検索・Deep Research（調査レポート自動生成）など機能の幅が広い。
+          日本語の情報やサポート資料も最も充実しており、「困ったらネット検索」が使いやすい。
+          カスタムAI（GPTs）で自分たちの業務専用AIも作れる。
+        </div>
+        <div class="service-tags">
+          <span class="tag tag-green">汎用性◎</span>
+          <span class="tag tag-green">画像生成◎</span>
+          <span class="tag tag-yellow">情報量◎</span>
+          <span class="tag tag-blue">Web検索○</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-logo service-logo-claude">● Claude（Anthropic）</div>
+        <div class="service-tagline">長文・報告書・助成金申請書に最強</div>
+        <div class="service-body">
+          日本語の質が最も高いと評価されることが多く、論理的な文章構成が得意。
+          20万トークン（本約1冊分）という長い文書を一度に処理できる。
+          安全性への配慮が手厚く、「間違えるとまずい」重要文書に向いている。
+          画像生成は非対応（テキスト特化）。
+        </div>
+        <div class="service-tags">
+          <span class="tag tag-green">日本語品質◎</span>
+          <span class="tag tag-green">長文処理◎</span>
+          <span class="tag tag-green">安全性◎</span>
+          <span class="tag tag-yellow">画像生成×</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-logo service-logo-gemini">● Gemini（Google）</div>
+        <div class="service-tagline">Googleツールと連携、無料で高機能</div>
+        <div class="service-body">
+          Gmail・Googleドキュメント・スプレッドシート・Google Meetと直接連携し、
+          既存のGoogle環境の中でそのままAIが使える。
+          Google検索との統合が強く、最新情報の取得が得意。
+          NPO向け無料版でエンタープライズグレードのデータ保護が使える点が大きな強み。
+        </div>
+        <div class="service-tags">
+          <span class="tag tag-green">Google連携◎</span>
+          <span class="tag tag-green">無料NPOプラン◎</span>
+          <span class="tag tag-blue">最新情報◎</span>
+          <span class="tag tag-yellow">日本語品質△</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-logo service-logo-copilot">● Copilot（Microsoft）</div>
+        <div class="service-tagline">Word・Excel・Teams内でそのまま使える</div>
+        <div class="service-body">
+          Word・Excel・PowerPoint・Outlook・Teamsの中で直接AIが使えるため、
+          「新しいツールを覚える手間ゼロ」で導入できる。
+          すでにMicrosoft 365を使っている団体には最も導入コストが低い。
+          Microsoft 365環境外でのメリットはあまりない。
+        </div>
+        <div class="service-tags">
+          <span class="tag tag-green">Office連携◎</span>
+          <span class="tag tag-blue">Teams連携◎</span>
+          <span class="tag tag-yellow">日本語品質△</span>
+          <span class="tag tag-yellow">汎用性△</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>日本語品質・得意分野まとめ</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>比較項目</th>
+            <th>ChatGPT</th>
+            <th>Claude</th>
+            <th>Gemini</th>
+            <th>Copilot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>日本語品質</td>
+            <td><span class="badge badge-green">◎</span></td>
+            <td><span class="badge badge-green">◎◎</span></td>
+            <td><span class="badge badge-yellow">△</span></td>
+            <td><span class="badge badge-yellow">△</span></td>
+          </tr>
+          <tr>
+            <td>Web検索・最新情報</td>
+            <td><span class="badge badge-green">◎</span></td>
+            <td><span class="badge badge-yellow">○</span></td>
+            <td><span class="badge badge-green">◎</span></td>
+            <td><span class="badge badge-green">◎</span></td>
+          </tr>
+          <tr>
+            <td>長文処理</td>
+            <td><span class="badge badge-yellow">○</span></td>
+            <td><span class="badge badge-green">◎◎</span></td>
+            <td><span class="badge badge-green">◎</span></td>
+            <td><span class="badge badge-yellow">○</span></td>
+          </tr>
+          <tr>
+            <td>画像生成</td>
+            <td><span class="badge badge-green">◎</span></td>
+            <td><span class="badge badge-red">×</span></td>
+            <td><span class="badge badge-green">○</span></td>
+            <td><span class="badge badge-yellow">△</span></td>
+          </tr>
+          <tr>
+            <td>外部ツール連携</td>
+            <td>プラグイン多数</td>
+            <td>基本的なAPI連携</td>
+            <td>Google全サービス</td>
+            <td>Microsoft 365全製品</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 8. プライバシー比較 -->
+  <div class="section" id="sec-privacy">
+    <div class="section-header">
+      <span class="section-num num-service">8</span>
+      <h2>プライバシー・データ保護比較</h2>
+    </div>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">🏆</div>
+      <div class="callout-body">
+        <div class="callout-title">NPOに最もおすすめ：Google Workspace for Nonprofits（無料版）</div>
+        <p class="callout-text">
+          無料でエンタープライズグレードのデータ保護が使えます。最大2,000ユーザーまで無料で、GeminiアプリとNotebookLMも使用可能。
+          日本のNPO法人・公益社団法人・社会福祉法人なども対象です。
+        </p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>ChatGPT</th>
+            <th>Claude</th>
+            <th>Gemini</th>
+            <th>Copilot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>無料版の学習利用</td>
+            <td><span class="policy-warn">あり（要オプトアウト）</span></td>
+            <td><span class="policy-warn">あり（要オプトアウト）</span></td>
+            <td><span class="policy-warn">あり（要オプトアウト）</span></td>
+            <td><span class="policy-warn">あり（要オプトアウト）</span></td>
+          </tr>
+          <tr>
+            <td>有料チームプランの学習利用</td>
+            <td><span class="policy-ok">なし</span></td>
+            <td><span class="policy-ok">なし</span></td>
+            <td><span class="policy-ok">なし</span></td>
+            <td><span class="policy-ok">なし</span></td>
+          </tr>
+          <tr>
+            <td>NPO無料プランの保護</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="policy-ok">◎ エンタープライズグレード</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>日本のデータセンター</td>
+            <td>対応（Enterprise）</td>
+            <td>調整中</td>
+            <td>対応（Workspace）</td>
+            <td>対応（M365）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 9. 業務別おすすめ -->
+  <div class="section" id="sec-npo-use">
+    <div class="section-header">
+      <span class="section-num num-service">9</span>
+      <h2>NPO業務別おすすめサービス</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>NPOでよくある業務</th>
+            <th>おすすめ</th>
+            <th>理由</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>📝 助成金申請書の下書き</td>
+            <td><strong>Claude</strong></td>
+            <td>日本語品質◎、論理的構成◎、長文処理◎。Anthropicも代表的用途として推奨</td>
+          </tr>
+          <tr>
+            <td>📣 SNS・広報文の作成</td>
+            <td><strong>ChatGPT</strong></td>
+            <td>カジュアル〜フォーマルまでトーン調整が柔軟。DALL-Eで画像生成も可</td>
+          </tr>
+          <tr>
+            <td>📊 Excelデータの集計・分析</td>
+            <td><strong>Copilot</strong></td>
+            <td>Excel内でそのまま使える。新しいツールを覚えなくていい</td>
+          </tr>
+          <tr>
+            <td>📋 Googleスプレッドシート整理</td>
+            <td><strong>Gemini</strong></td>
+            <td>Googleスプレッドシート内でそのまま使える</td>
+          </tr>
+          <tr>
+            <td>📧 メール・返信文の下書き</td>
+            <td><strong>Gemini / Copilot</strong></td>
+            <td>Gmail連携（Gemini）・Outlook連携（Copilot）でメール内から直接使える</td>
+          </tr>
+          <tr>
+            <td>📖 議事録の要約・整理</td>
+            <td><strong>Claude / Gemini</strong></td>
+            <td>Claudeは長文要約◎。GeminiはGoogle Meet連携で議事録自動化が可能</td>
+          </tr>
+          <tr>
+            <td>🔍 制度・情報の調査</td>
+            <td><strong>ChatGPT / Gemini</strong></td>
+            <td>Web検索機能が強力。最新情報を取得しながら回答してくれる</td>
+          </tr>
+          <tr>
+            <td>📄 PDFや長文資料の読み込み</td>
+            <td><strong>Claude / Gemini</strong></td>
+            <td>長文ドキュメントの処理が得意。大量の資料を一度に読ませられる</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 10. NPO割引プラン -->
+  <div class="section" id="sec-pricing">
+    <div class="section-header">
+      <span class="section-num num-service">10</span>
+      <h2>NPO割引プラン一覧</h2>
+    </div>
+
+    <p>
+      4大AIサービスすべてがNPO向け割引プログラムを提供しています。
+      2024〜2025年にかけて各社が相次いで新設・拡充しており、最大<strong>75%オフ</strong>で使えます。
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>サービス</th>
+            <th>NPO割引後の月額（1ユーザー）</th>
+            <th>割引率</th>
+            <th>申請先</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Google Workspace<br>（無料版）</strong></td>
+            <td><span style="font-size: 18px; font-weight: 800; color: var(--success);">無料</span><br><small>最大2,000ユーザー</small></td>
+            <td><span class="badge badge-green">100%</span></td>
+            <td>Google for Nonprofits（日本対応）</td>
+          </tr>
+          <tr>
+            <td><strong>ChatGPT Business</strong></td>
+            <td>約$8〜10/月<br>（約1,200〜1,500円）</td>
+            <td><span class="badge badge-green">最大75%</span></td>
+            <td>OpenAI for Nonprofits<br>/ TechSoup経由</td>
+          </tr>
+          <tr>
+            <td><strong>Claude Team</strong></td>
+            <td>約$8/月<br>（約1,200円）</td>
+            <td><span class="badge badge-green">最大75%</span></td>
+            <td>Claude for Nonprofits<br>/ Goodstack経由</td>
+          </tr>
+          <tr>
+            <td><strong>Microsoft 365 Copilot</strong></td>
+            <td>約$25.50/月<br>（約3,825円）</td>
+            <td><span class="badge badge-yellow">15%</span></td>
+            <td>Microsoft非営利団体プログラム</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">📌</div>
+      <div class="callout-body">
+        <div class="callout-title">日本のNPO法人は申請できる？</div>
+        <p class="callout-text">
+          Google for NonprofitsとMicrosoftは日本のNPO法人に対応。
+          ChatGPT・Claudeも申請可能ですが、審査が必要です。
+          料金・条件は頻繁に変更されるため、申込前に各社公式サイトで最新情報を確認してください。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. 導入の進め方 -->
+  <div class="section" id="sec-recommend">
+    <div class="section-header">
+      <span class="section-num num-service">11</span>
+      <h2>導入の進め方：一歩ずつ始めよう</h2>
+    </div>
+
+    <div class="rec-box">
+      <h4>🗺️ NPO向け AI導入ロードマップ（推奨）</h4>
+      <ol class="rec-steps">
+        <li>
+          <div>
+            <strong>まず無料で試す（今すぐ）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">Googleアカウントを持っている方はGemini、あるいはClaudeの無料版から始めてみましょう。いきなり課金する必要はありません。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>リスク対策の最低限を整える（1〜2週間以内）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">「入力してはいけない情報リスト」を作り、スタッフで共有。オプトアウト設定も確認。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Google for Nonprofitsに申請する（1ヶ月以内）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">無料でエンタープライズ保護付きのAIが使えます。申請から承認まで数週間かかる場合があります。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>用途に合わせて有料プランを検討（3ヶ月後）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">助成金申請書中心ならClaudeのNPO割引、汎用性重視ならChatGPTのNPO割引を検討。</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>組織としてのAIポリシーを策定する（半年以内）</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">コミュニティで共有したノウハウをもとに、自団体のAIルールを文書化しましょう。</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <h3>初心者向け：どれから始めるべきか</h3>
+
+    <div class="service-grid">
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 18px; border-left: 4px solid #4285F4;">
+        <div style="font-size: 13px; font-weight: 700; color: #4285F4; margin-bottom: 6px;">Googleをすでに使っている方</div>
+        <div style="font-size: 13px;"><strong>Gemini</strong> から始めよう</div>
+        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">Googleアカウントがあればすぐ使える。無料NPOプランでデータも守られる</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 18px; border-left: 4px solid #D97706;">
+        <div style="font-size: 13px; font-weight: 700; color: #D97706; margin-bottom: 6px;">文章・申請書の品質を重視する方</div>
+        <div style="font-size: 13px;"><strong>Claude</strong> から始めよう</div>
+        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">助成金申請書・報告書の日本語品質が最高水準</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 18px; border-left: 4px solid #10A37F;">
+        <div style="font-size: 13px; font-weight: 700; color: #10A37F; margin-bottom: 6px;">広報・SNS・なんでも使いたい方</div>
+        <div style="font-size: 13px;"><strong>ChatGPT</strong> から始めよう</div>
+        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">機能が最多。困ったときの情報も一番多い</div>
+      </div>
+      <div style="background: var(--bg-gray); border-radius: 10px; padding: 16px 18px; border-left: 4px solid #0078D4;">
+        <div style="font-size: 13px; font-weight: 700; color: #0078D4; margin-bottom: 6px;">すでにMicrosoft 365を使っている方</div>
+        <div style="font-size: 13px;"><strong>Copilot</strong> から始めよう</div>
+        <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">Word・Excelの中でそのまま使えて学習コストゼロ</div>
+      </div>
+    </div>
+
+    <div class="callout callout-success" style="margin-top: 24px;">
+      <div class="callout-icon">💬</div>
+      <div class="callout-body">
+        <div class="callout-title">迷ったら、コミュニティで聞いてみよう</div>
+        <p class="callout-text">
+          「どのサービスが自分の団体に合うか分からない」「試したけどうまくいかない」という声は、
+          コミュニティで共有してください。仲間の経験や事例を聞きながら、一緒に判断しましょう。
+          一人で考えなくていいのがコミュニティの強みです。
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  <div class="footer-logo">Path<span>Link</span> AI Lab</div>
+  <p>NPO・社会福祉のための実践型AIコミュニティ</p>
+  <p>yoor.jp/door/Path_Link</p>
+  <div class="hearts">💛 💛</div>
+  <p style="margin-top: 12px; font-size: 11px; opacity: 0.4;">
+    © 2025 PathLink. 本資料はコミュニティ内部共有目的で作成しました。<br>
+    料金・機能・ポリシーは各サービスにより随時変更されます。申込前に各社公式サイトをご確認ください。
+  </p>
+</footer>
+
+</body>
+</html>
