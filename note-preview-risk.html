@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>note風プレビュー｜AIリスクガイド</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    /* noteのナビバー風 */
+    .note-nav {
+      height: 52px;
+      border-bottom: 1px solid #e6e6e6;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 10;
+    }
+    .note-logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #41c9b4;
+      letter-spacing: -1px;
+    }
+    .note-nav-links { display: flex; gap: 16px; margin-left: auto; }
+    .note-nav-links span { font-size: 13px; color: #888; cursor: pointer; }
+    .note-nav-links .btn-purchase {
+      background: #41c9b4; color: white; border-radius: 4px;
+      padding: 6px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+
+    /* メインコンテナ */
+    .note-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    /* ヘッダー部分 */
+    .note-tag {
+      display: inline-block;
+      font-size: 12px;
+      color: #888;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 2px 10px;
+      margin-bottom: 16px;
+    }
+    .note-title {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+    .note-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .note-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #41c9b4;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 14px; font-weight: 700;
+    }
+    .note-author-name { font-size: 13px; font-weight: 700; }
+    .note-date { font-size: 12px; color: #888; }
+    .note-meta-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 12px 0; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 32px;
+      font-size: 12px; color: #888;
+    }
+
+    /* 有料ゾーン */
+    .note-paywall {
+      background: #f9f9f9;
+      border: 1px solid #e6e6e6;
+      border-radius: 8px;
+      padding: 32px 24px;
+      text-align: center;
+      margin: 40px 0;
+    }
+    .note-paywall-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .note-paywall-desc { font-size: 13px; color: #555; margin-bottom: 20px; line-height: 1.7; }
+    .note-paywall-price { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+    .note-paywall-btn {
+      background: #41c9b4; color: white; border: none;
+      border-radius: 4px; padding: 12px 32px;
+      font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; max-width: 300px;
+    }
+
+    /* 本文スタイル（noteのデフォルト） */
+    .note-body { color: #1a1a1a; }
+    .note-body h2 {
+      font-size: 20px; font-weight: 700;
+      margin: 40px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #1a1a1a;
+    }
+    .note-body h3 {
+      font-size: 17px; font-weight: 700;
+      margin: 28px 0 12px;
+    }
+    .note-body p { margin-bottom: 16px; font-size: 16px; }
+    .note-body ul, .note-body ol { padding-left: 24px; margin-bottom: 16px; }
+    .note-body li { margin-bottom: 8px; font-size: 15px; }
+    .note-body strong { font-weight: 700; }
+    .note-body table {
+      width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;
+    }
+    .note-body table th {
+      background: #f5f5f5; padding: 10px 12px;
+      border: 1px solid #ddd; font-weight: 700; text-align: left;
+    }
+    .note-body table td {
+      padding: 10px 12px; border: 1px solid #ddd; vertical-align: top;
+    }
+    .note-body hr { border: none; border-top: 1px solid #e6e6e6; margin: 32px 0; }
+    .note-body blockquote {
+      border-left: 3px solid #ddd; padding: 4px 16px;
+      color: #666; margin: 16px 0; font-style: italic;
+    }
+
+    /* 「ここまで無料」の区切り */
+    .free-limit {
+      text-align: center; font-size: 13px; color: #888;
+      margin: 32px 0;
+      position: relative;
+    }
+    .free-limit::before, .free-limit::after {
+      content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: #e6e6e6;
+    }
+    .free-limit::before { left: 0; }
+    .free-limit::after { right: 0; }
+
+    /* 比較バナー */
+    .compare-banner {
+      background: #f0fdf9;
+      border: 1px solid #41c9b4;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 32px 0;
+      font-size: 13px;
+      color: #333;
+      text-align: center;
+    }
+    .compare-banner strong { color: #00a880; }
+  </style>
+</head>
+<body>
+
+<!-- noteナビバー -->
+<div class="note-nav">
+  <div class="note-logo">note</div>
+  <div class="note-nav-links">
+    <span>フォロー</span>
+    <span>♡ 24</span>
+    <div class="note-paywall-btn" style="display:inline-block;padding:6px 14px;font-size:13px;border-radius:4px;">記事を購入 ¥500</div>
+  </div>
+</div>
+
+<!-- 記事本体 -->
+<div class="note-container">
+
+  <div class="note-tag"># NPO × AI</div>
+  <div class="note-title">NPOのためのAIリスク完全ガイド｜情報漏洩・法的リスク・エージェントの落とし穴まで</div>
+
+  <div class="note-author">
+    <div class="note-avatar">P</div>
+    <div>
+      <div class="note-author-name">PathLink AI Lab</div>
+      <div class="note-date">2026年4月6日</div>
+    </div>
+  </div>
+  <div class="note-meta-row">
+    <span>👁 312 views</span>
+    <span>♡ 24</span>
+    <span>💬 3</span>
+    <span style="margin-left:auto;">¥500</span>
+  </div>
+
+  <div class="note-body">
+
+    <p>
+      AIツールは急速に普及しています。しかし多くのNPOで、リスクへの備えが追いついていないのが現実です。
+    </p>
+    <p>
+      このガイドでは、<strong>NPOがAIを使う前に知っておくべきリスクの全体像</strong>を解説します。情報漏洩・法的リスク・業務リスク・AIエージェントの注意点まで、データと事例をもとに整理しました。
+    </p>
+
+    <h2>現状：なぜ今リスクを知るべきか</h2>
+    <p>
+      NPOの<strong>82%がAIをすでに利用している</strong>一方で、AIポリシーを策定しているのは<strong>わずか10%</strong>です（Whole Whale 2025年調査）。2024年のAIインシデント報告件数は前年比<strong>+56%</strong>で増加しています。
+    </p>
+    <p>
+      IPAが2026年1月に公表した「情報セキュリティ10大脅威」では、「AIの利用をめぐるサイバーリスク」が初めて第3位にランクインしました。
+    </p>
+
+    <h2>情報漏洩リスクと対策</h2>
+    <p>無料プランのAIに団体情報・個人情報を入力すると、その内容がAIの学習データとして使われる可能性があります。</p>
+
+    <h3>各サービスのデータ利用ポリシー</h3>
+    <table>
+      <thead>
+        <tr><th>サービス</th><th>無料プラン</th><th>有料チームプラン</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ChatGPT</td><td>▲ デフォルトで学習利用</td><td>✓ 学習利用なし</td></tr>
+        <tr><td>Gemini</td><td>▲ デフォルトで学習利用</td><td>✓ 学習利用なし</td></tr>
+        <tr><td>Claude</td><td>▲ 学習利用あり（要オプトアウト）</td><td>✓ 学習利用なし</td></tr>
+        <tr><td>Copilot</td><td>▲ デフォルトで学習利用</td><td>✓ 学習利用なし</td></tr>
+      </tbody>
+    </table>
+
+    <h3>情報漏洩を防ぐ5つの基本対策</h3>
+    <ol>
+      <li>「AIに入力してはいけない情報」リストを作成・共有する</li>
+      <li>有料の法人プランを使う（NPO割引あり）</li>
+      <li>個人名・住所は匿名化してから入力する</li>
+      <li>AIの出力は必ず人間が確認してから公開する</li>
+      <li>どのスタッフが何のツールを使っているか把握する</li>
+    </ol>
+
+    <hr>
+
+    <div class="free-limit">ここまで無料で読めます</div>
+
+  </div>
+
+  <!-- ペイウォール -->
+  <div class="note-paywall">
+    <div class="note-paywall-title">この記事の続きを読むには購入が必要です</div>
+    <div class="note-paywall-desc">
+      この先には以下のコンテンツが含まれています<br>
+      ・NPO特有のリスク（DV被害者情報の取り扱い等）<br>
+      ・法的・コンプライアンスリスク（個人情報保護法・著作権）<br>
+      ・ハルシネーション・AI依存リスクへの対処<br>
+      ・自団体のリスク判断チェックリスト<br>
+      ・AIエージェント（Claude Code）特有のリスクと運用ルール
+    </div>
+    <div class="note-paywall-price">¥ 500</div>
+    <button class="note-paywall-btn">購入して続きを読む</button>
+    <p style="margin-top:12px;font-size:12px;color:#aaa;">PathLink AI Labメンバーは無料で読めます</p>
+  </div>
+
+  <!-- 比較バナー -->
+  <div class="compare-banner">
+    📎 <strong>PathLink AI Lab メンバーシップ</strong>に加入すると、このシリーズ全記事が読み放題になります
+  </div>
+
+</div>
+
+<!-- 比較バナー（ページ外） -->
+<div style="background:#1a1a1a;color:rgba(255,255,255,0.5);text-align:center;padding:12px;font-size:11px;">
+  ↑ これはnoteの表示イメージです（実際のnote記事ではありません）
+</div>
+
+</body>
+</html>

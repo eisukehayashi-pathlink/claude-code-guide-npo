@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>note風プレビュー｜AIエージェント環境整備ガイド</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif; background: #fff; color: #1a1a1a; font-size: 16px; line-height: 1.9; }
+    .note-nav { height: 52px; border-bottom: 1px solid #e6e6e6; display: flex; align-items: center; padding: 0 20px; gap: 16px; position: sticky; top: 0; background: #fff; z-index: 10; }
+    .note-logo { font-size: 22px; font-weight: 900; color: #41c9b4; letter-spacing: -1px; }
+    .note-nav-links { display: flex; gap: 16px; margin-left: auto; align-items: center; }
+    .note-nav-links span { font-size: 13px; color: #888; cursor: pointer; }
+    .btn-purchase { background: #41c9b4; color: white; border-radius: 4px; padding: 6px 14px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .note-container { max-width: 680px; margin: 0 auto; padding: 48px 20px 80px; }
+    .note-tag { display: inline-block; font-size: 12px; color: #888; border: 1px solid #ddd; border-radius: 20px; padding: 2px 10px; margin-bottom: 16px; }
+    .note-title { font-size: 26px; font-weight: 700; line-height: 1.5; margin-bottom: 20px; }
+    .note-author { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .note-avatar { width: 36px; height: 36px; border-radius: 50%; background: #41c9b4; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 700; }
+    .note-author-name { font-size: 13px; font-weight: 700; }
+    .note-date { font-size: 12px; color: #888; }
+    .note-meta-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; margin-bottom: 32px; font-size: 12px; color: #888; }
+    .note-body h2 { font-size: 20px; font-weight: 700; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #1a1a1a; }
+    .note-body h3 { font-size: 17px; font-weight: 700; margin: 28px 0 12px; }
+    .note-body p { margin-bottom: 16px; font-size: 16px; }
+    .note-body ul, .note-body ol { padding-left: 24px; margin-bottom: 16px; }
+    .note-body li { margin-bottom: 10px; font-size: 15px; }
+    .note-body strong { font-weight: 700; }
+    .note-body table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    .note-body table th { background: #f5f5f5; padding: 10px 12px; border: 1px solid #ddd; font-weight: 700; text-align: left; }
+    .note-body table td { padding: 10px 12px; border: 1px solid #ddd; vertical-align: top; }
+    .note-body hr { border: none; border-top: 1px solid #e6e6e6; margin: 32px 0; }
+    .note-body pre { background: #f5f5f5; border-radius: 6px; padding: 16px 20px; font-size: 13px; overflow-x: auto; margin: 16px 0; line-height: 1.7; font-family: 'Courier New', monospace; color: #333; }
+    .free-limit { text-align: center; font-size: 13px; color: #888; margin: 32px 0; position: relative; }
+    .free-limit::before, .free-limit::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: #e6e6e6; }
+    .free-limit::before { left: 0; }
+    .free-limit::after { right: 0; }
+    .note-paywall { background: #f9f9f9; border: 1px solid #e6e6e6; border-radius: 8px; padding: 32px 24px; text-align: center; margin: 40px 0; }
+    .note-paywall-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .note-paywall-desc { font-size: 13px; color: #555; margin-bottom: 20px; line-height: 1.7; }
+    .note-paywall-price { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+    .note-paywall-btn { background: #41c9b4; color: white; border: none; border-radius: 4px; padding: 12px 32px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; max-width: 300px; }
+    .compare-banner { background: #f0fdf9; border: 1px solid #41c9b4; border-radius: 8px; padding: 16px 20px; margin: 32px 0; font-size: 13px; color: #333; text-align: center; }
+    .compare-banner strong { color: #00a880; }
+  </style>
+</head>
+<body>
+
+<div class="note-nav">
+  <div class="note-logo">note</div>
+  <div class="note-nav-links">
+    <span>フォロー</span>
+    <span>♡ 31</span>
+    <div class="btn-purchase">記事を購入 ¥500</div>
+  </div>
+</div>
+
+<div class="note-container">
+  <div class="note-tag"># NPO × AI</div>
+  <div class="note-title">非営利団体のためのAIエージェント環境整備ガイド｜アカウント設計からCLAUDE.md、MCP権限管理まで</div>
+  <div class="note-author">
+    <div class="note-avatar">P</div>
+    <div>
+      <div class="note-author-name">PathLink AI Lab</div>
+      <div class="note-date">2026年4月6日</div>
+    </div>
+  </div>
+  <div class="note-meta-row">
+    <span>👁 198 views</span>
+    <span>♡ 31</span>
+    <span>💬 7</span>
+    <span style="margin-left:auto;">¥500</span>
+  </div>
+
+  <div class="note-body">
+
+    <p>前回の記事でAIエージェントのリスクを解説しました。今回は「では、どうすれば安全に使えるのか」という具体的な環境整備の手順を解説します。</p>
+    <p>難しそうに聞こえますが、基本は<strong>3つの原則</strong>だけです。</p>
+
+    <h2>まず知っておくべき3つの基本原則</h2>
+
+    <ol>
+      <li><strong>最小権限の原則：</strong>AIに与える権限は、その作業に必要な最小限のみにする。使い終わったら切る。</li>
+      <li><strong>アカウント分離の原則：</strong>「組織共有アカウント」と「AIエージェントを動かすアカウント」を絶対に混在させない。</li>
+      <li><strong>人間確認の原則：</strong>重要なアクション（メール送信・ファイル削除）は必ず人間が事前に確認してから実行させる。</li>
+    </ol>
+
+    <hr>
+
+    <h2>STEP 1：アカウント設計</h2>
+    <p>最重要ステップです。アカウントを3種類に分けて管理します。</p>
+
+    <table>
+      <thead>
+        <tr><th>アカウントの種類</th><th>用途</th><th>AIエージェント利用</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>組織共有アカウント</td><td>公式メール・共有Drive管理</td><td>🚫 禁止</td></tr>
+        <tr><td>スタッフ個人アカウント</td><td>個人業務・通常のチャットAI</td><td>⚠️ チャット型のみ可</td></tr>
+        <tr><td>AI専用アカウント（推奨）</td><td>AIエージェント専用</td><td>✅ 推奨</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2>STEP 2：フォルダ設計</h2>
+    <p>AIが触っていい場所を物理的に限定します。推奨構成はこのとおりです。</p>
+
+    <pre>AI作業フォルダ/
+├── CLAUDE.md   ← AIへの行動ルール
+├── input/      ← AIに処理させるファイルを置く
+├── output/     ← AIが生成したファイルが出てくる
+└── temp/       ← 一時作業用（定期的に削除）</pre>
+
+    <p>このフォルダの外には絶対に触れさせない、というルールを守るだけでリスクの大半を防げます。</p>
+
+    <div class="free-limit">ここまで無料で読めます</div>
+
+  </div>
+
+  <div class="note-paywall">
+    <div class="note-paywall-title">この記事の続きを読むには購入が必要です</div>
+    <div class="note-paywall-desc">
+      この先には以下のコンテンツが含まれています<br>
+      ・CLAUDE.md のNPO向けテンプレート（コピーしてすぐ使えます）<br>
+      ・MCPツール別：Gmail・Drive・Calendarの推奨権限設定<br>
+      ・月1回10分のモニタリング手順と異常時の対応フロー<br>
+      ・そのままコピーできる組織AIポリシーテンプレート<br>
+      ・環境整備チェックリスト（5領域・全項目）
+    </div>
+    <div class="note-paywall-price">¥ 500</div>
+    <button class="note-paywall-btn">購入して続きを読む</button>
+    <p style="margin-top:12px;font-size:12px;color:#aaa;">PathLink AI Labメンバーは無料で読めます</p>
+  </div>
+
+  <div class="compare-banner">
+    📎 <strong>PathLink AI Lab メンバーシップ</strong>に加入すると、このシリーズ全記事が読み放題になります
+  </div>
+
+</div>
+
+<div style="background:#1a1a1a;color:rgba(255,255,255,0.5);text-align:center;padding:12px;font-size:11px;">
+  ↑ これはnoteの表示イメージです（実際のnote記事ではありません）
+</div>
+
+</body>
+</html>
