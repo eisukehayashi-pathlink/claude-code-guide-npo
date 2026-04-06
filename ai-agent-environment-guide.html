@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>非営利団体のためのAIエージェント環境整備ガイド</title>
+  <style>
+    :root {
+      --primary: #1BB8CE;
+      --primary-dark: #1498AA;
+      --primary-light: #E6F7FA;
+      --accent: #FFD166;
+      --accent-dark: #E8B84B;
+      --danger: #FF6B6B;
+      --danger-light: #FFF0F0;
+      --success: #06D6A0;
+      --success-light: #E6FBF5;
+      --warning: #FFB347;
+      --warning-light: #FFF5E6;
+      --purple: #8B5CF6;
+      --purple-light: #F3F0FF;
+      --text: #2D3748;
+      --text-light: #718096;
+      --bg: #FFFFFF;
+      --bg-gray: #F7FBFC;
+      --border: #D0EEF4;
+      --code-bg: #1A2332;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+      color: var(--text);
+      background: var(--bg-gray);
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, #0F1F30 0%, #1498AA 100%);
+      color: white;
+      padding: 56px 24px 44px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      background: rgba(27,184,206,0.10);
+      border-radius: 50%;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -90px; left: -60px;
+      width: 260px; height: 260px;
+      background: rgba(255,209,102,0.07);
+      border-radius: 50%;
+    }
+    .logo {
+      position: absolute;
+      top: 20px; right: 24px;
+      font-size: 22px;
+      font-weight: 900;
+      color: white;
+      z-index: 2;
+    }
+    .logo span { color: var(--accent); }
+    .header-badge {
+      display: inline-block;
+      background: var(--success);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+      position: relative; z-index: 1;
+    }
+    header h1 {
+      font-size: clamp(20px, 3.5vw, 30px);
+      font-weight: 800;
+      line-height: 1.4;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    header .subtitle {
+      font-size: 14px;
+      opacity: 0.85;
+      max-width: 580px;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+      line-height: 1.7;
+    }
+    .header-meta { font-size: 12px; opacity: 0.6; z-index: 1; position: relative; }
+
+    /* ===== LAYOUT ===== */
+    .container { max-width: 880px; margin: 0 auto; padding: 0 16px 48px; }
+
+    /* ===== PHASE BANNER ===== */
+    .phase-banner {
+      padding: 18px 24px;
+      margin: 32px 0 0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: white;
+    }
+    .phase-banner-setup { background: linear-gradient(135deg, #2C3E50 0%, #1498AA 100%); }
+    .phase-banner-account { background: linear-gradient(135deg, #6D28D9 0%, #8B5CF6 100%); }
+    .phase-banner-folder { background: linear-gradient(135deg, #059669 0%, #06D6A0 100%); }
+    .phase-banner-mcp { background: linear-gradient(135deg, #D97706 0%, #FFB347 100%); }
+    .phase-banner-monitor { background: linear-gradient(135deg, #C0392B 0%, #FF6B6B 100%); }
+    .phase-num { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.85; }
+    .phase-title { font-size: clamp(15px, 2.5vw, 19px); font-weight: 800; }
+    .phase-desc { font-size: 13px; opacity: 0.9; margin-top: 3px; }
+
+    /* ===== TOC ===== */
+    .toc {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 28px 0;
+    }
+    .toc-title { font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .toc ol { padding-left: 18px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: var(--text); text-decoration: none; font-size: 13px; }
+    .toc a:hover { color: var(--primary); }
+    .toc-sub { padding-left: 20px; margin-top: 4px; }
+    .toc-sub li { font-size: 12px; color: var(--text-light); margin-bottom: 3px; }
+
+    /* ===== INTRO CARD ===== */
+    .intro-card {
+      background: white;
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin: 24px 0;
+      box-shadow: 0 2px 10px rgba(27,184,206,0.06);
+      border-left: 5px solid var(--primary);
+    }
+    .intro-card p { font-size: 15px; margin-bottom: 10px; }
+    .intro-card p:last-child { margin-bottom: 0; }
+
+    /* ===== SECTION ===== */
+    .section {
+      background: white;
+      border-radius: 14px;
+      padding: 36px 36px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(27,184,206,0.06);
+    }
+    @media (max-width: 560px) { .section { padding: 24px 18px; } }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    .section-num {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800; color: white;
+      flex-shrink: 0;
+    }
+    .num-setup { background: #2C3E50; }
+    .num-account { background: var(--purple); }
+    .num-folder { background: var(--success); }
+    .num-mcp { background: var(--warning); }
+    .num-monitor { background: var(--danger); }
+    h2 { font-size: clamp(16px, 2.5vw, 20px); font-weight: 800; }
+    h3 {
+      font-size: 16px; font-weight: 700; color: var(--primary-dark);
+      margin: 26px 0 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    h3::before {
+      content: '';
+      display: inline-block;
+      width: 4px; height: 16px;
+      background: var(--primary);
+      border-radius: 2px; flex-shrink: 0;
+    }
+    h3.h3-purple::before { background: var(--purple); }
+    h3.h3-purple { color: #5B21B6; }
+    h3.h3-green::before { background: var(--success); }
+    h3.h3-green { color: #065F46; }
+    h3.h3-orange::before { background: var(--warning); }
+    h3.h3-orange { color: #92400E; }
+    h3.h3-red::before { background: var(--danger); }
+    h3.h3-red { color: #C0392B; }
+    p { margin-bottom: 12px; font-size: 15px; }
+
+    /* ===== CALLOUT ===== */
+    .callout {
+      border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
+    .callout-body { flex: 1; }
+    .callout-title { font-weight: 700; font-size: 13px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .callout-text { font-size: 13px; line-height: 1.7; margin: 0; }
+    .callout-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+    .callout-info .callout-title { color: var(--primary-dark); }
+    .callout-warn { background: var(--warning-light); border-left: 4px solid var(--warning); }
+    .callout-warn .callout-title { color: #C47A00; }
+    .callout-danger { background: var(--danger-light); border-left: 4px solid var(--danger); }
+    .callout-danger .callout-title { color: #C0392B; }
+    .callout-success { background: var(--success-light); border-left: 4px solid var(--success); }
+    .callout-success .callout-title { color: #059669; }
+    .callout-purple { background: var(--purple-light); border-left: 4px solid var(--purple); }
+    .callout-purple .callout-title { color: #6D28D9; }
+
+    /* ===== CODE BLOCK ===== */
+    .code-block {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      color: #E2E8F0;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre;
+    }
+    .code-label {
+      font-size: 11px; font-weight: 700; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .code-comment { color: #718096; }
+    .code-key { color: var(--accent); }
+    .code-val { color: #68D391; }
+    .code-str { color: #FC8181; }
+
+    /* ===== TABLES ===== */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 420px; }
+    thead tr { background: var(--primary); color: white; }
+    thead th { padding: 11px 14px; text-align: left; font-weight: 700; }
+    thead th.purple-head { background: var(--purple); }
+    thead th.green-head { background: #059669; }
+    thead th.orange-head { background: #D97706; }
+    thead th.red-head { background: #C0392B; }
+    tbody tr:nth-child(even) { background: var(--bg-gray); }
+    tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: 700;
+    }
+    .badge-red { background: #FEE2E2; color: #C0392B; }
+    .badge-yellow { background: #FEF3C7; color: #92400E; }
+    .badge-green { background: #D1FAE5; color: #065F46; }
+    .badge-blue { background: var(--primary-light); color: var(--primary-dark); }
+    .badge-purple { background: var(--purple-light); color: #6D28D9; }
+
+    /* ===== STEP CARDS ===== */
+    .step-list { list-style: none; padding: 0; counter-reset: step; }
+    .step-list li {
+      counter-increment: step;
+      display: flex; gap: 16px; align-items: flex-start;
+      margin-bottom: 18px; padding: 18px 20px;
+      background: var(--bg-gray); border-radius: 12px;
+      border: 1.5px solid var(--border);
+    }
+    .step-list li::before {
+      content: counter(step);
+      min-width: 32px; height: 32px; border-radius: 50%;
+      background: var(--primary); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; flex-shrink: 0;
+    }
+    .step-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .step-body { font-size: 13px; color: var(--text-light); line-height: 1.7; }
+    .step-list.purple li::before { background: var(--purple); }
+    .step-list.green li::before { background: var(--success); }
+    .step-list.orange li::before { background: var(--warning); }
+    .step-list.red li::before { background: var(--danger); }
+
+    /* ===== GRID CARDS ===== */
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    @media (max-width: 580px) { .card-grid { grid-template-columns: 1fr; } }
+    .card {
+      border-radius: 12px; padding: 18px 20px;
+      border: 1.5px solid var(--border);
+    }
+    .card-icon { font-size: 22px; margin-bottom: 8px; }
+    .card-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .card-body { font-size: 12px; color: var(--text-light); line-height: 1.7; }
+    .card-ok { border-color: var(--success); background: var(--success-light); }
+    .card-ng { border-color: var(--danger); background: var(--danger-light); }
+    .card-warn { border-color: var(--warning); background: var(--warning-light); }
+    .card-tip { border-color: var(--primary); background: var(--primary-light); }
+
+    /* ===== PRINCIPLE BOX ===== */
+    .principle-box {
+      background: linear-gradient(135deg, #0F1F30 0%, #1A3A4A 100%);
+      border-radius: 14px; padding: 28px 32px; margin: 20px 0;
+      color: white;
+    }
+    .principle-box h4 { font-size: 16px; font-weight: 800; color: var(--accent); margin-bottom: 18px; }
+    .principle-list { list-style: none; padding: 0; }
+    .principle-list li {
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 14px; font-size: 14px;
+    }
+    .principle-num {
+      min-width: 26px; height: 26px; border-radius: 50%;
+      background: var(--accent); color: #1A2332;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 900; flex-shrink: 0; margin-top: 1px;
+    }
+    .principle-title { font-weight: 700; color: var(--accent); }
+    .principle-desc { font-size: 12px; opacity: 0.75; margin-top: 3px; line-height: 1.6; }
+
+    /* ===== CHECKLIST ===== */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 8px; font-size: 13px; padding: 8px 12px;
+      background: var(--bg-gray); border-radius: 6px;
+    }
+    .checklist li::before {
+      content: '☐'; font-size: 16px; color: var(--primary);
+      flex-shrink: 0; line-height: 1.3;
+    }
+
+    /* ===== SUMMARY TABLE ===== */
+    .summary-table { background: white; border-radius: 12px; overflow: hidden; border: 2px solid var(--border); margin: 16px 0; }
+    .summary-row { display: flex; border-bottom: 1px solid var(--border); }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-label {
+      min-width: 160px; padding: 12px 16px;
+      font-size: 13px; font-weight: 700;
+      background: var(--primary-light); color: var(--primary-dark);
+      display: flex; align-items: center;
+    }
+    .summary-value { padding: 12px 16px; font-size: 13px; color: var(--text); flex: 1; }
+    @media (max-width: 480px) {
+      .summary-row { flex-direction: column; }
+      .summary-label { min-width: unset; }
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #1A2332; color: rgba(255,255,255,0.8);
+      text-align: center; padding: 36px 24px; margin-top: 16px;
+    }
+    footer .footer-logo { font-size: 22px; font-weight: 900; color: white; margin-bottom: 6px; }
+    footer .footer-logo span { color: var(--accent); }
+    footer p { font-size: 12px; opacity: 0.6; margin-bottom: 4px; }
+
+    [id] { scroll-margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Path<span>Link</span></div>
+  <div class="header-badge">NPO AI Lab — 実践ガイド</div>
+  <h1>非営利団体のための<br>AIエージェント<br>環境整備ガイド</h1>
+  <p class="subtitle">
+    リスクを最小限に抑えながらAIエージェントを活用するための<br>
+    アカウント管理・フォルダ設計・権限設定・運用ルールを解説します
+  </p>
+  <div class="header-meta">作成日：2026年4月 ／ PathLink AI Lab</div>
+</header>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="intro-card" style="margin-top: 28px;">
+    <p>
+      前回のガイドで解説したように、AIエージェントは「チャット型AI」とは別物であり、
+      ファイルの読み書き・メールの操作・コードの実行など、<strong>自律的に幅広い操作を実行できます</strong>。
+    </p>
+    <p>
+      しかし、「リスクがあるから使わない」という選択肢は現実的ではありません。
+      AIエージェントを適切な環境で使えば、NPOの業務効率は飛躍的に向上します。
+    </p>
+    <p style="margin-bottom: 0;">
+      このガイドでは、<strong>リスクを最小限にしながらAIエージェントを安全に活用するための環境整備</strong>を、
+      具体的な手順とともに解説します。
+    </p>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">📋 このガイドの構成</div>
+    <ol>
+      <li><a href="#sec-principles">まず知っておくべき3つの基本原則</a></li>
+      <li><a href="#sec-account">アカウント設計：個人・組織・AI専用を分ける</a></li>
+      <li><a href="#sec-folder">フォルダ設計：AIエージェントの「作業範囲」を限定する</a></li>
+      <li><a href="#sec-claudemd">CLAUDE.mdによるClaude Codeの行動ルール設定</a></li>
+      <li><a href="#sec-mcp">MCPツール接続の権限管理</a></li>
+      <li><a href="#sec-monitor">モニタリング：何が起きたか定期的に確認する</a></li>
+      <li><a href="#sec-policy">組織のAIエージェント利用ポリシー（テンプレート）</a></li>
+      <li><a href="#sec-checklist">環境整備チェックリスト</a></li>
+    </ol>
+  </div>
+
+  <!-- ==============================
+       1. 基本原則
+       ============================== -->
+  <div class="phase-banner phase-banner-setup">
+    <div>
+      <div class="phase-num">基本原則</div>
+      <div class="phase-title">考え方から理解する</div>
+      <div class="phase-desc">具体的な設定の前に、3つの原則を押さえましょう</div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-principles">
+    <div class="section-header">
+      <span class="section-num num-setup">1</span>
+      <h2>まず知っておくべき3つの基本原則</h2>
+    </div>
+
+    <p>
+      環境整備の具体策を学ぶ前に、AIエージェントの安全管理の土台となる考え方を理解しておきましょう。
+      これを押さえておくと、「なぜそうするのか」が納得できます。
+    </p>
+
+    <div class="principle-box">
+      <h4>🛡️ AIエージェント安全利用の3原則</h4>
+      <ul class="principle-list">
+        <li>
+          <div class="principle-num">1</div>
+          <div>
+            <div class="principle-title">最小権限の原則（Least Privilege）</div>
+            <div class="principle-desc">
+              AIエージェントに与える権限は、「その作業に必要な最小限のみ」にする。
+              読み取りだけでいい場合は書き込み権限を与えない。
+              使い終わったら権限を切る。これだけで大半のリスクが消えます。
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="principle-num">2</div>
+          <div>
+            <div class="principle-title">アカウント分離の原則（Account Separation）</div>
+            <div class="principle-desc">
+              「組織共有アカウント」と「AIエージェントを動かすアカウント」を絶対に混在させない。
+              AIエージェントは専用のアカウント・専用のフォルダの中だけで動かす。
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="principle-num">3</div>
+          <div>
+            <div class="principle-title">人間確認の原則（Human in the Loop）</div>
+            <div class="principle-desc">
+              AIエージェントに「全部お任せ」はしない。
+              重要なアクション（メール送信・ファイル削除・外部への書き込み）は
+              必ず人間が事前に確認してから実行させる。
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <div class="callout-title">この3原則があれば、ゼロリスクでなくてもいい</div>
+        <p class="callout-text">
+          AIエージェントのリスクをゼロにすることはできません。
+          しかしこの3原則を守るだけで、リスクの80〜90%は対処できます。
+          「完璧な準備ができるまで使わない」より「原則を守りながら少しずつ使い始める」方が賢明です。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       2. アカウント設計
+       ============================== -->
+  <div class="phase-banner phase-banner-account" style="margin-top: 8px;">
+    <div>
+      <div class="phase-num">STEP 1</div>
+      <div class="phase-title">アカウント設計</div>
+      <div class="phase-desc">最も重要な基盤。ここが崩れると他の対策が無意味になります</div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-account">
+    <div class="section-header">
+      <span class="section-num num-account">2</span>
+      <h2>アカウント設計：個人・組織・AI専用を分ける</h2>
+    </div>
+
+    <p>
+      AIエージェントを安全に使うための最重要ステップは、<strong>アカウントの分離</strong>です。
+      多くのNPOでは「組織の共有Googleアカウント」で全員がログインしているケースがありますが、
+      この環境でAIエージェントを動かすのは危険です。
+    </p>
+
+    <h3 class="h3-purple">推奨するアカウント構成</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="purple-head">アカウントの種類</th>
+            <th class="purple-head">用途</th>
+            <th class="purple-head">AIエージェント利用</th>
+            <th class="purple-head">例</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>組織共有アカウント</strong></td>
+            <td>公式メール・共有Drive・組織カレンダーの管理</td>
+            <td><span class="badge badge-red">🚫 禁止</span></td>
+            <td>info@〇〇npo.org</td>
+          </tr>
+          <tr>
+            <td><strong>スタッフ個人アカウント</strong></td>
+            <td>個人業務・通常のチャットAI利用</td>
+            <td><span class="badge badge-yellow">⚠️ チャット型のみ可</span></td>
+            <td>yamada@〇〇npo.org</td>
+          </tr>
+          <tr>
+            <td><strong>AI専用アカウント</strong><br>（推奨）</td>
+            <td>AIエージェント専用。接続範囲を限定したGoogleアカウント</td>
+            <td><span class="badge badge-green">✅ 推奨</span></td>
+            <td>ai-agent@〇〇npo.org<br>または個人Gmailアカウント</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-danger">
+      <div class="callout-icon">🚨</div>
+      <div class="callout-body">
+        <div class="callout-title">「組織アカウントでログインしたままClaude Codeを使う」は最も危険</div>
+        <p class="callout-text">
+          組織の共有Googleアカウントでブラウザにログインした状態でClaude CodeにGoogle DriveのMCPを接続すると、
+          組織全体のドライブ・メール・カレンダーにAIエージェントがアクセスできてしまいます。
+          支援記録・財務データ・理事会資料など、機密情報が全て対象になります。
+        </p>
+      </div>
+    </div>
+
+    <h3 class="h3-purple">AI専用アカウントの作り方（Google）</h3>
+
+    <ol class="step-list purple">
+      <li>
+        <div>
+          <div class="step-title">AI作業専用のGoogleアカウントを作成する</div>
+          <div class="step-body">
+            個人のGmailアカウント（例：yamada.ai.work@gmail.com）を新規作成します。
+            組織のGoogle Workspaceアカウントがある場合は、管理者に「AI作業専用サブアカウント」を
+            作成してもらうことも可能です（例：ai-work@〇〇npo.org）。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="step-title">そのアカウント専用のGoogle Driveフォルダを作る</div>
+          <div class="step-body">
+            AI専用アカウントのGoogleドライブに「AI作業フォルダ」を作成します。
+            このフォルダ以外には何もファイルを置かないことがポイントです。
+            AIエージェントが見れるのは「このフォルダの中だけ」という状態を作ります。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="step-title">必要なファイルだけを「共有」で渡す</div>
+          <div class="step-body">
+            AIに処理させたいファイルは、組織の共有ドライブからAI専用アカウントのフォルダへ
+            「コピーして共有」します。
+            「閲覧者のみ」権限で共有することで、AIが元のファイルを書き換えられないようにします。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="step-title">作業が終わったら共有を解除する</div>
+          <div class="step-body">
+            処理が終わったファイルの共有を解除します。
+            AI専用アカウントのドライブには、常に必要最小限のファイルだけが入っている状態を保ちます。
+          </div>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">✅</div>
+      <div class="callout-body">
+        <div class="callout-title">小規模NPOへの現実的な代替案</div>
+        <p class="callout-text">
+          「専用アカウントを作るのが大変」という場合は、
+          <strong>AIエージェントを動かすパソコンに、専用の別ユーザーアカウント（Windows/Mac）を作る</strong>方法も有効です。
+          そのユーザーでは組織アカウントにログインしない、という運用だけでもリスクを大幅に下げられます。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       3. フォルダ設計
+       ============================== -->
+  <div class="phase-banner phase-banner-folder" style="margin-top: 8px;">
+    <div>
+      <div class="phase-num">STEP 2</div>
+      <div class="phase-title">フォルダ設計</div>
+      <div class="phase-desc">AIエージェントが「入っていい場所」と「入ってはいけない場所」を明確に分ける</div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-folder">
+    <div class="section-header">
+      <span class="section-num num-folder">3</span>
+      <h2>フォルダ設計：AIエージェントの「作業範囲」を限定する</h2>
+    </div>
+
+    <p>
+      Claude Codeなどのエージェントは、「起動したフォルダ（作業ディレクトリ）」を中心に動きます。
+      そのため、<strong>AIエージェント専用の作業フォルダを作り、そこだけを作業対象にする</strong>設計が重要です。
+    </p>
+
+    <h3 class="h3-green">推奨フォルダ構成（ローカルPCの場合）</h3>
+
+    <div class="code-block">
+      <div class="code-label">📁 推奨フォルダ構成</div>
+      <pre>
+<span class="code-val">デスクトップ/</span>
+├── <span class="code-key">AI作業フォルダ/</span>          ← Claude Code はここで起動する
+│   ├── <span class="code-val">CLAUDE.md</span>            ← AIへの行動ルール（後述）
+│   ├── input/               ← AIに処理させたいファイルを置く場所
+│   │   └── （作業ファイルをここにコピー）
+│   ├── output/              ← AIが生成したファイルが出てくる場所
+│   │   └── （AIの出力物）
+│   └── temp/                ← 一時作業用（定期的に削除）
+│
+├── 組織共有フォルダのショートカット  ← AIフォルダの外に置く
+│   └── （組織のファイル本体はここ。AIは触らない）
+└── 個人作業フォルダ/              ← AIフォルダの外
+    └── （プライベート・重要書類）
+</pre>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <div class="callout-title">「デスクトップ全体」や「ドキュメントフォルダ」でClaude Codeを起動しない</div>
+        <p class="callout-text">
+          広い範囲でエージェントを起動すると、意図しないファイルへのアクセスや変更が起こりやすくなります。
+          必ず<strong>専用フォルダ内で起動</strong>することを習慣にしてください。
+        </p>
+      </div>
+    </div>
+
+    <h3 class="h3-green">ファイルの流れ：組織フォルダ→AI→出力の分離</h3>
+
+    <div class="card-grid">
+      <div class="card card-ng">
+        <div class="card-icon">❌</div>
+        <div class="card-title">やってはいけない運用</div>
+        <div class="card-body">
+          組織の共有ドライブに直接アクセスさせ、AIが元のファイルを直接編集する。
+          どのファイルが変更されたか把握できなくなる。
+        </div>
+      </div>
+      <div class="card card-ok">
+        <div class="card-icon">✅</div>
+        <div class="card-title">推奨する運用</div>
+        <div class="card-body">
+          ① 元ファイルをinputフォルダにコピー →
+          ② AIが処理してoutputフォルダに保存 →
+          ③ 人間が確認して組織フォルダに取り込む。
+          元のファイルは一切変更されない。
+        </div>
+      </div>
+    </div>
+
+    <h3 class="h3-green">Googleドライブを使う場合の設計</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="green-head">フォルダ</th>
+            <th class="green-head">権限設定</th>
+            <th class="green-head">目的</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>📁 AI-INPUT</strong></td>
+            <td>AI専用アカウントに「閲覧者」権限</td>
+            <td>AIに読ませたいファイルを一時的に置く。AIは読むだけで書き込めない</td>
+          </tr>
+          <tr>
+            <td><strong>📁 AI-OUTPUT</strong></td>
+            <td>AI専用アカウントに「編集者」権限</td>
+            <td>AIが生成したファイルを置く場所。人間が確認後に組織フォルダへ移動</td>
+          </tr>
+          <tr>
+            <td><strong>📁 組織機密フォルダ</strong></td>
+            <td>AI専用アカウントには権限なし</td>
+            <td>財務・支援記録など。AIは絶対に見られない状態にする</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==============================
+       4. CLAUDE.md
+       ============================== -->
+  <div class="phase-banner phase-banner-account" style="margin-top: 8px;">
+    <div>
+      <div class="phase-num">STEP 3</div>
+      <div class="phase-title">CLAUDE.mdの設定</div>
+      <div class="phase-desc">Claude Codeに「何をしてはいけないか」を事前に読ませる最重要ファイル</div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-claudemd">
+    <div class="section-header">
+      <span class="section-num num-account">4</span>
+      <h2>CLAUDE.mdによるClaude Codeの行動ルール設定</h2>
+    </div>
+
+    <p>
+      <strong>CLAUDE.md</strong>は、Claude Codeが起動時に必ず読み込む設定ファイルです。
+      ここに「してはいけないこと」「必ず確認すること」を書いておくことで、
+      AIエージェントの行動を事前にコントロールできます。
+      NPO向けの安全運用において、最も効果的な対策の一つです。
+    </p>
+
+    <h3>NPO向け CLAUDE.md テンプレート</h3>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">📋</div>
+      <div class="callout-body">
+        <div class="callout-title">使い方</div>
+        <p class="callout-text">
+          AI作業フォルダの直下に「CLAUDE.md」という名前でファイルを作成し、
+          以下の内容をコピー＆ペーストしてください。
+          【】の部分は自団体の情報に書き換えてください。
+        </p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-label">📄 CLAUDE.md — NPO向けテンプレート</div>
+      <pre>
+<span class="code-key"># 【団体名】AI作業環境 — 利用ルール</span>
+
+<span class="code-comment">## あなたの役割</span>
+あなたは【団体名】のスタッフをサポートするAIアシスタントです。
+このフォルダ内の作業のみを支援してください。
+
+<span class="code-comment">## ⛔ 絶対にしてはいけないこと</span>
+- このフォルダ（AI作業フォルダ）の外にあるファイルを読み取ること
+- このフォルダの外にあるファイルを変更・削除・移動すること
+- 個人情報（氏名・住所・電話番号・メールアドレス）を含む情報を外部に送信すること
+- 支援対象者・受益者に関する情報を処理の対象にすること
+- メール・カレンダーなど外部サービスへの書き込みを確認なしに行うこと
+- ファイルの削除を確認なしに実行すること
+
+<span class="code-comment">## ✅ 必ず確認してから実行すること</span>
+- ファイルを新規作成・上書き保存する前に、内容を提示して確認を求めること
+- 外部APIやWebにアクセスする前に、目的と送信内容を説明すること
+- 複数ステップの作業を行う前に、全体の手順を提示して承認を得ること
+
+<span class="code-comment">## 📁 作業対象フォルダ</span>
+- input/ ← 処理対象ファイル（読み取りのみ）
+- output/ ← 生成物の保存先
+- temp/   ← 一時作業用（重要ファイルは置かない）
+
+<span class="code-comment">## 🚫 AIに入力してはいけない情報</span>
+- 支援対象者の氏名・住所・連絡先・相談内容
+- DV・虐待・生活困窮に関する個人情報
+- スタッフの個人連絡先
+- 財務詳細データ（口座番号・詳細な経理情報）
+- 未公表の事業計画・契約情報
+
+<span class="code-comment">## その他の注意事項</span>
+- 数値・統計を引用する際は必ず出典を明記すること
+- 生成した文章に「AI生成」であることを示すコメントを付けること
+- 不明点があれば作業を進める前に確認すること
+</pre>
+    </div>
+
+    <h3>CLAUDE.mdを効果的にするコツ</h3>
+
+    <div class="card-grid">
+      <div class="card card-tip">
+        <div class="card-icon">📌</div>
+        <div class="card-title">禁止事項は具体的に書く</div>
+        <div class="card-body">
+          「個人情報を扱わないこと」より「氏名・住所・電話番号・支援記録を処理しないこと」の方が効果的。
+          AIは具体的な指示ほど正確に従います。
+        </div>
+      </div>
+      <div class="card card-tip">
+        <div class="card-icon">🔄</div>
+        <div class="card-title">定期的に見直す</div>
+        <div class="card-body">
+          業務内容や使うツールが変わったら、CLAUDE.mdも更新します。
+          3ヶ月に1回は内容を見直す習慣をつけましょう。
+        </div>
+      </div>
+      <div class="card card-tip">
+        <div class="card-icon">👥</div>
+        <div class="card-title">チームで内容を共有する</div>
+        <div class="card-body">
+          CLAUDE.mdの内容をスタッフ全員で確認し、「なぜこのルールがあるか」を共有します。
+          ルールの背景を理解することで、類似の状況でも適切に対応できます。
+        </div>
+      </div>
+      <div class="card card-tip">
+        <div class="card-icon">🏢</div>
+        <div class="card-title">プロジェクトごとに作る</div>
+        <div class="card-body">
+          助成金申請用・広報用など、用途別に専用フォルダとCLAUDE.mdを作ることで、
+          それぞれの業務に適したルールを設定できます。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       5. MCP権限管理
+       ============================== -->
+  <div class="phase-banner phase-banner-mcp" style="margin-top: 8px;">
+    <div>
+      <div class="phase-num">STEP 4</div>
+      <div class="phase-title">MCPツールの権限管理</div>
+      <div class="phase-desc">外部サービスへの接続を「必要最小限」に絞る</div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-mcp">
+    <div class="section-header">
+      <span class="section-num num-mcp">5</span>
+      <h2>MCPツール接続の権限管理</h2>
+    </div>
+
+    <p>
+      MCP（Model Context Protocol）とは、Claude Codeと外部サービス（Google Drive・Gmail・GitHubなど）を
+      つなぐ仕組みです。便利な反面、<strong>接続する権限の範囲が広すぎると、AIが意図しない操作を行うリスク</strong>が高まります。
+    </p>
+
+    <h3 class="h3-orange">MCPツール別：推奨権限設定</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="orange-head">MCPツール</th>
+            <th class="orange-head">使っていい権限</th>
+            <th class="orange-head">原則禁止の権限</th>
+            <th class="orange-head">注意点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Google Drive</strong></td>
+            <td>指定フォルダの読み取り・ファイル作成（output専用フォルダのみ）</td>
+            <td>組織共有ドライブ全体への書き込み・削除</td>
+            <td>AI専用アカウントで接続。組織アカウントでは接続しない</td>
+          </tr>
+          <tr>
+            <td><strong>Gmail</strong></td>
+            <td>下書き作成・メール検索・読み取り</td>
+            <td>メール送信・連絡先へのアクセス</td>
+            <td>「下書き作成のみ」スコープで認証する。送信は必ず人間が行う</td>
+          </tr>
+          <tr>
+            <td><strong>Google Calendar</strong></td>
+            <td>予定の読み取り・下書き作成</td>
+            <td>予定の自動作成・招待状の送信</td>
+            <td>共有カレンダーへの書き込み権限は与えない</td>
+          </tr>
+          <tr>
+            <td><strong>GitHub</strong></td>
+            <td>コードの読み取り・Issue作成</td>
+            <td>本番ブランチへの直接プッシュ・Secrets閲覧</td>
+            <td>作業用のフォーク・ブランチのみ操作可能にする</td>
+          </tr>
+          <tr>
+            <td><strong>Slack</strong></td>
+            <td>メッセージの下書き作成・チャンネル読み取り</td>
+            <td>メッセージの自動送信・DM送信</td>
+            <td>送信はすべて人間が確認してから行う</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="h3-orange">MCP接続の「つけ外し」を習慣にする</h3>
+
+    <ol class="step-list orange">
+      <li>
+        <div>
+          <div class="step-title">使う直前にMCPを接続する</div>
+          <div class="step-body">
+            「Google Driveで文書整理をするから今日だけ接続」という形で、
+            常時接続したままにしない。Claude Codeの設定から、使う時だけ有効にする。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="step-title">作業が終わったらすぐ切断する</div>
+          <div class="step-body">
+            作業が完了したらMCPの接続を解除する。
+            Claude Codeを閉じるだけでなく、接続設定からも確認して無効化する。
+            「つけっぱなし」が事故の元です。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="step-title">接続内容をログに残す</div>
+          <div class="step-body">
+            「いつ・誰が・どのMCPを・何の作業で使ったか」を簡単なメモで記録しておく。
+            月1回程度振り返ることで、不審な利用を早期に発見できます。
+          </div>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout callout-purple">
+      <div class="callout-icon">🔑</div>
+      <div class="callout-body">
+        <div class="callout-title">OAuth認証スコープの確認が重要</div>
+        <p class="callout-text">
+          MCPを接続する際にGoogleアカウントの認証画面が出ます。
+          そこに表示される「アクセスの許可」の内容を必ず確認してください。
+          「Gmailのすべてのデータへのアクセス」など広すぎる権限が求められる場合は、
+          そのツールの利用を見直すか、別の方法を検討してください。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       6. モニタリング
+       ============================== -->
+  <div class="phase-banner phase-banner-monitor" style="margin-top: 8px;">
+    <div>
+      <div class="phase-num">STEP 5</div>
+      <div class="phase-title">モニタリング</div>
+      <div class="phase-desc">何が起きたかを定期的に確認し、異常を早期発見する</div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-monitor">
+    <div class="section-header">
+      <span class="section-num num-monitor">6</span>
+      <h2>モニタリング：何が起きたか定期的に確認する</h2>
+    </div>
+
+    <p>
+      どれだけ準備をしても、予期しないことは起こりえます。
+      重要なのは<strong>「何かあったとき早く気づける」仕組みを作ること</strong>です。
+      モニタリングは難しくありません。月1回、10分の確認で十分です。
+    </p>
+
+    <h3 class="h3-red">確認すべきログと確認方法</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="red-head">確認項目</th>
+            <th class="red-head">確認場所</th>
+            <th class="red-head">確認頻度</th>
+            <th class="red-head">チェックポイント</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Googleアカウントのアクティビティ</strong></td>
+            <td>Googleアカウント →「データとプライバシー」→「アクティビティ管理」</td>
+            <td>月1回</td>
+            <td>知らないアプリからのアクセス・不審なログイン場所がないか</td>
+          </tr>
+          <tr>
+            <td><strong>Google Driveのアクセス履歴</strong></td>
+            <td>GoogleドライブのファイルをD右クリック→「バージョン履歴」または「詳細パネル」</td>
+            <td>月1回</td>
+            <td>意図しないファイルの変更・削除がないか</td>
+          </tr>
+          <tr>
+            <td><strong>Google連携アプリの確認</strong></td>
+            <td>Googleアカウント →「セキュリティ」→「サードパーティアプリとサービス」</td>
+            <td>3ヶ月に1回</td>
+            <td>不要になったMCP接続・アプリが残っていないか。不審なアプリを削除</td>
+          </tr>
+          <tr>
+            <td><strong>Claude Codeのプロジェクト履歴</strong></td>
+            <td>Claude Code上の会話履歴</td>
+            <td>週1回（使った週のみ）</td>
+            <td>意図しない操作の指示・実行がなかったか確認</td>
+          </tr>
+          <tr>
+            <td><strong>outputフォルダの内容</strong></td>
+            <td>ローカルのoutputフォルダ</td>
+            <td>作業後すぐ</td>
+            <td>生成されたファイルが想定内の内容かを確認してから組織フォルダに移す</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="h3-red">異常を発見したときの対応手順</h3>
+
+    <ol class="step-list red">
+      <li>
+        <div>
+          <div class="step-title">すぐにMCP接続をすべて切断する</div>
+          <div class="step-body">
+            Claude Codeの接続設定からすべてのMCPを無効化する。
+            Googleアカウントの「サードパーティアプリとサービス」からも接続を削除する。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="step-title">影響範囲を確認する</div>
+          <div class="step-body">
+            どのファイルにアクセスされたか、どのメールが閲覧されたかをログで確認する。
+            変更されたファイルがあれば、Googleドライブの「バージョン履歴」から復元できます。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="step-title">関係するスタッフに報告する</div>
+          <div class="step-body">
+            個人情報を含む可能性のある情報にアクセスがあった場合は、
+            事務局長・理事長に報告する。必要に応じて個人情報保護委員会への報告も検討する。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <div class="step-title">再発防止策を検討して記録する</div>
+          <div class="step-body">
+            「何が原因でどんな問題が起きたか」「次はどう防ぐか」をCLAUDE.mdまたは
+            組織のルール文書に追記する。インシデントを学びに変える。
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ==============================
+       7. 組織ポリシー
+       ============================== -->
+  <div class="section" id="sec-policy" style="margin-top: 8px;">
+    <div class="section-header">
+      <span class="section-num num-setup" style="background: var(--primary);">7</span>
+      <h2>組織のAIエージェント利用ポリシー（テンプレート）</h2>
+    </div>
+
+    <p>
+      環境整備と並行して、<strong>「誰が・何を・どのように使うか」のルールを文書化する</strong>ことが重要です。
+      以下はNPO向けの最小限のポリシーテンプレートです。
+      自団体に合わせて内容を修正してお使いください。
+    </p>
+
+    <div class="code-block">
+      <div class="code-label">📄 AIエージェント利用ポリシー — テンプレート</div>
+      <pre>
+<span class="code-key">【団体名】AIエージェント利用ポリシー</span>
+<span class="code-comment">制定日：　　　年　月　日 ／ 担当：　　　　</span>
+
+<span class="code-key">1. 対象ツール</span>
+本ポリシーの対象：Claude Code、その他AIエージェントツール全般
+（チャット型AI：ChatGPT・Claude・Geminiは別途「AI利用ガイドライン」に従う）
+
+<span class="code-key">2. 利用可能なスタッフ</span>
+□ 全スタッフが利用可能
+□ 指定されたスタッフのみ利用可能（名前：　　　　　　）
+□ 事前に事務局長の承認を得た場合のみ利用可能
+
+<span class="code-key">3. 利用環境のルール</span>
+・組織の共有Googleアカウントでログインした環境での利用を禁止する
+・AI作業専用フォルダを作成し、そのフォルダ内のみで作業を行う
+・CLAUDE.mdに本ポリシーに基づく行動ルールを記載する
+・MCPツールの接続は使用時のみとし、作業後は切断する
+
+<span class="code-key">4. AIに入力してはいけない情報</span>
+・支援対象者・受益者の氏名・連絡先・相談内容
+・DV被害者・虐待記録に関するあらゆる情報
+・スタッフの個人情報（住所・連絡先・給与情報）
+・財務詳細データ（口座番号・詳細な経理情報）
+・未締結の契約情報・交渉中の内容
+・助成元からの非公開資料
+
+<span class="code-key">5. 確認なしに実行させてはいけない操作</span>
+・メール・メッセージの送信
+・ファイルの削除・大量変更
+・外部サービスへのデータアップロード
+・カレンダーへの予定追加・招待状送信
+
+<span class="code-key">6. モニタリング</span>
+・Googleアカウントのアクティビティを月1回確認する（担当：　　　　）
+・MCPツールの接続状況を3ヶ月に1回見直す
+・問題が発生した場合は事務局長に報告し、本ポリシーを更新する
+
+<span class="code-key">7. 見直し時期</span>
+本ポリシーは6ヶ月に1回、または重大なAI関連インシデントが発生した場合に見直す。
+</pre>
+    </div>
+
+    <div class="callout callout-success">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <div class="callout-title">まずA4・1枚で十分。完璧より「あること」が大切</div>
+        <p class="callout-text">
+          完璧なポリシーを作ろうとして何ヶ月もかけるより、
+          シンプルでもいいので「ルールが存在すること」が重要です。
+          スタッフが読んで理解できる長さに収めましょう。
+          コミュニティで他の団体の事例を共有しながら、少しずつ改善していきましょう。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       8. チェックリスト
+       ============================== -->
+  <div class="section" id="sec-checklist">
+    <div class="section-header">
+      <span class="section-num num-setup" style="background: var(--accent-dark);">8</span>
+      <h2>環境整備チェックリスト</h2>
+    </div>
+
+    <p>このチェックリストで、自団体の環境整備の状況を確認しましょう。</p>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 13px; font-weight: 700; color: #5B21B6; margin-bottom: 8px; padding: 6px 12px; background: var(--purple-light); border-radius: 6px;">
+        🔑 アカウント設計
+      </div>
+      <ul class="checklist">
+        <li>組織共有アカウントではAIエージェントを使わないルールを決めた</li>
+        <li>AI作業専用のアカウントまたはパソコンユーザーを作成した（または検討した）</li>
+        <li>スタッフ全員に「組織共有アカウントでのAIエージェント禁止」を周知した</li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 13px; font-weight: 700; color: #065F46; margin-bottom: 8px; padding: 6px 12px; background: var(--success-light); border-radius: 6px;">
+        📁 フォルダ設計
+      </div>
+      <ul class="checklist">
+        <li>AI作業専用フォルダを作成した（input / output / temp の構造）</li>
+        <li>AIエージェントはAI作業フォルダ内のみで起動するルールを決めた</li>
+        <li>機密情報を含むフォルダはAIエージェントからアクセスできない設定にした</li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 13px; font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; padding: 6px 12px; background: var(--primary-light); border-radius: 6px;">
+        📄 CLAUDE.md
+      </div>
+      <ul class="checklist">
+        <li>AI作業フォルダにCLAUDE.mdを作成した</li>
+        <li>「入力してはいけない情報」を具体的にリストアップした</li>
+        <li>「確認なしに実行しないこと」をCLAUDE.mdに明記した</li>
+        <li>CLAUDE.mdの内容をスタッフで確認・共有した</li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 13px; font-weight: 700; color: #92400E; margin-bottom: 8px; padding: 6px 12px; background: var(--warning-light); border-radius: 6px;">
+        🔌 MCP権限管理
+      </div>
+      <ul class="checklist">
+        <li>接続しているMCPツールとその権限範囲を把握している</li>
+        <li>Gmail・Google DriveのMCPは「下書き・閲覧のみ」など最小権限で接続している</li>
+        <li>使い終わったMCPはその都度切断する習慣ができている</li>
+        <li>Googleアカウントの「サードパーティアプリ」リストを確認した</li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 13px; font-weight: 700; color: #C0392B; margin-bottom: 8px; padding: 6px 12px; background: var(--danger-light); border-radius: 6px;">
+        📊 モニタリング・ポリシー
+      </div>
+      <ul class="checklist">
+        <li>Googleアクティビティの月次確認を担当者に割り当てた</li>
+        <li>組織のAIエージェント利用ポリシーを文書化した（または予定がある）</li>
+        <li>インシデント発生時の報告先・対応手順を決めた</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-info" style="margin-top: 8px;">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body">
+        <div class="callout-title">全部できなくてもOK。「アカウント分離」だけでも今日から始めよう</div>
+        <p class="callout-text">
+          このチェックリストを全て完了するには時間がかかります。
+          まず<strong>「組織共有アカウントでAIエージェントを使わない」</strong>という1点を
+          チームで合意するだけで、最大のリスクを回避できます。
+          残りは少しずつ整備していきましょう。
+          コミュニティで他の団体の進め方を参考にしながら、無理なく整備してください。
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  <div class="footer-logo">Path<span>Link</span> AI Lab</div>
+  <p>NPO・社会福祉のための実践型AIコミュニティ</p>
+  <p>yoor.jp/door/Path_Link</p>
+  <div style="font-size: 18px; margin-top: 14px;">💛 💛</div>
+  <p style="margin-top: 12px; font-size: 11px; opacity: 0.4;">
+    © 2026 PathLink. 本資料はコミュニティ内部共有目的で作成しました。<br>
+    ツールの仕様・ポリシーは各サービスにより随時変更されます。最新情報は各社公式サイトをご確認ください。
+  </p>
+</footer>
+
+</body>
+</html>
