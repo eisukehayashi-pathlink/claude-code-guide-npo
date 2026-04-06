@@ -388,6 +388,7 @@
           <li><a href="#sec-legal">法的リスク</a></li>
           <li><a href="#sec-ops">業務リスク</a></li>
           <li><a href="#sec-checklist">自団体のリスク判断チェックリスト</a></li>
+          <li><a href="#sec-agents">AIエージェント・Claude Codeのリスクと運用ルール</a></li>
         </ol>
       </div>
       <div class="toc-section">
@@ -827,6 +828,197 @@
     </div>
   </div>
 
+  <!-- 7. AIエージェントのリスク -->
+  <div class="section" id="sec-agents">
+    <div class="section-header">
+      <span class="section-num num-risk">7</span>
+      <h2>AIエージェント・Claude Codeを使う時の特別なリスク</h2>
+    </div>
+
+    <div class="callout callout-danger">
+      <div class="callout-icon">🤖</div>
+      <div class="callout-body">
+        <div class="callout-title">「AIエージェント」は、ただのチャットとは別物</div>
+        <p class="callout-text">
+          ChatGPTやClaudeにテキストを入力して返答をもらうのが「チャット型AI」。
+          一方で<strong>AIエージェント</strong>は、ファイルの読み書き・アプリの操作・コードの実行などを<strong>自律的に</strong>行います。
+          Claude Code（デスクトップアプリ）はその代表例です。使い方を誤ると、意図しない情報アクセスや操作が起こりえます。
+        </p>
+      </div>
+    </div>
+
+    <h3 class="danger-heading">なぜ組織アカウントでの利用が問題になるのか</h3>
+
+    <p>
+      ある支援団体では、<strong>「組織の共有アカウントでログインした環境でのAIエージェント使用を全面禁止」</strong>という方針を定めました。
+      その理由は、エージェントがGoogleドライブ・メール・カレンダーなど、ログイン中のアカウントに紐づくすべての情報に
+      アクセスできてしまう可能性があるためです。
+    </p>
+
+    <div class="risk-grid">
+      <div class="risk-card risk-card-high">
+        <div class="risk-label risk-label-high">リスク A ／ 情報アクセス</div>
+        <div class="risk-title">Googleドライブ内の機密ファイルを読み取られる</div>
+        <div class="risk-desc">
+          Claude CodeにGoogle Driveのツール（MCP）を接続すると、
+          エージェントはドライブ内の全ファイルを検索・閲覧できます。
+          支援記録・財務資料・理事会資料など、組織の機密情報が
+          AIに渡ってしまう可能性があります。
+        </div>
+      </div>
+      <div class="risk-card risk-card-high">
+        <div class="risk-label risk-label-high">リスク B ／ 意図しない操作</div>
+        <div class="risk-title">メール・カレンダーが自動操作される</div>
+        <div class="risk-desc">
+          「メールの返信文を作って」と頼んだつもりが、
+          エージェントがそのまま送信まで実行してしまうケースがあります。
+          Gmailや Google カレンダーへの書き込み権限が付与されている場合、
+          予期しない操作が起こりえます。
+        </div>
+      </div>
+      <div class="risk-card risk-card-mid">
+        <div class="risk-label risk-label-mid">リスク C ／ コード実行</div>
+        <div class="risk-title">ローカルファイルの変更・削除が起こる</div>
+        <div class="risk-desc">
+          Claude Codeはパソコン内のファイルを直接読み書き・削除できます。
+          「整理して」という曖昧な指示を誤解し、
+          必要なファイルを削除したり移動させてしまうことがあります。
+        </div>
+      </div>
+      <div class="risk-card risk-card-mid">
+        <div class="risk-label risk-label-mid">リスク D ／ 情報の外部送信</div>
+        <div class="risk-title">入力したデータが外部AIに送られる</div>
+        <div class="risk-desc">
+          エージェントが「調査のため」にWebへアクセスしたり、
+          外部APIを呼び出す際に、手元のデータの一部が
+          外部サーバーに送信されることがあります。
+          どこに何が送られたか把握が難しいです。
+        </div>
+      </div>
+    </div>
+
+    <h3>Claude Code利用時の具体的な注意点</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>場面</th>
+            <th>リスク</th>
+            <th>対策</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google DriveのMCPを接続する</td>
+            <td>ドライブ内の全ファイルにアクセス可能になる</td>
+            <td>接続するのは<strong>業務専用の個人アカウント</strong>のみ。組織共有アカウントは原則禁止</td>
+          </tr>
+          <tr>
+            <td>GmailのMCPを接続する</td>
+            <td>メールの読み取り・送信まで実行される可能性</td>
+            <td>「下書き作成のみ」など<strong>権限を最小限</strong>に設定する</td>
+          </tr>
+          <tr>
+            <td>パソコン内フォルダを作業対象にする</td>
+            <td>意図しないファイルの変更・削除が起こる</td>
+            <td>作業用の<strong>専用フォルダのみ</strong>を指定する。重要フォルダは対象外に</td>
+          </tr>
+          <tr>
+            <td>「全部やって」と指示する</td>
+            <td>確認なしに複数の操作が連続実行される</td>
+            <td>指示は<strong>1ステップずつ</strong>。実行前の確認（プレビュー）を習慣化する</td>
+          </tr>
+          <tr>
+            <td>長時間・大量タスクを任せる</td>
+            <td>途中でどこまで何をしたか把握できなくなる</td>
+            <td>小さな単位で区切り、<strong>こまめに確認・承認</strong>しながら進める</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>組織として決めておくべき運用ルール</h3>
+
+    <div class="rec-box">
+      <h4>🛡️ AIエージェント利用のための最低限ルール（例）</h4>
+      <ol class="rec-steps">
+        <li>
+          <div>
+            <strong>組織共有アカウントでのエージェント利用を禁止する</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">
+              Google Workspace の組織アカウント・共有メールアカウントなど、
+              複数人が使うアカウントでAIエージェントを動かすことは禁止。
+              個人の業務用アカウントのみで利用する。
+            </span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>接続するツール（MCP）の権限を最小限に設定する</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">
+              「読み取りのみ」「下書き作成のみ」など、必要最小限の権限で接続する。
+              「書き込み・送信・削除」の権限は原則付与しない。使い終わったら接続を切る。
+            </span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>AIエージェントの作業対象フォルダを専用フォルダに限定する</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">
+              Claude Codeを使う場合は「AIエージェント作業用」専用フォルダを作成し、
+              そのフォルダ外には触らせない運用にする。重要ファイルは別フォルダに保管。
+            </span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>実行前のプレビュー・確認を必ず行う</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">
+              Claude Codeはファイル操作や送信の前に「確認を求める」設定ができます。
+              この設定を必ずONにしておく。「まとめてやって」という指示は避ける。
+            </span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>利用履歴・ログを定期的に確認する</strong><br>
+            <span style="font-size: 13px; color: var(--text-light);">
+              Google アクティビティ履歴・Driveのアクセスログなどを定期的に確認し、
+              意図しないアクセスや操作がなかったか確認する習慣をつける。
+            </span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <div class="callout-title">「ゼロリスクは不可能」という前提で運用設計を</div>
+        <p class="callout-text">
+          AIエージェントのリスクを完全になくすことはできません。
+          しかし、<strong>権限の最小化・個人アカウントの分離・実行前確認の習慣化</strong>の3つを徹底するだけで、
+          リスクを大幅に下げることができます。
+          完璧を目指して導入を止めるより、適切なルールを決めて使い始める方が現実的です。
+        </p>
+      </div>
+    </div>
+
+    <div class="callout callout-info" style="margin-top: 12px;">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <div class="callout-title">Claude Codeを安全に使うための「CLAUDE.md」</div>
+        <p class="callout-text">
+          Claude Codeには<strong>CLAUDE.md</strong>という設定ファイルがあり、
+          「このフォルダ外のファイルには触れないこと」「個人情報を含む情報は入力しないこと」などの
+          ルールをあらかじめ書いておくことができます。
+          組織でClaude Codeを使う場合は、このファイルに利用ルールを記載することを推奨します。
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- ==============================
        PART 2: SERVICE
        ============================== -->
@@ -841,7 +1033,7 @@
   <!-- 7. サービス特徴 -->
   <div class="section" id="sec-services">
     <div class="section-header">
-      <span class="section-num num-service">7</span>
+      <span class="section-num num-service">8</span>
       <h2>4大AIサービスの特徴比較</h2>
     </div>
 
@@ -967,7 +1159,7 @@
   <!-- 8. プライバシー比較 -->
   <div class="section" id="sec-privacy">
     <div class="section-header">
-      <span class="section-num num-service">8</span>
+      <span class="section-num num-service">9</span>
       <h2>プライバシー・データ保護比較</h2>
     </div>
 
@@ -1030,7 +1222,7 @@
   <!-- 9. 業務別おすすめ -->
   <div class="section" id="sec-npo-use">
     <div class="section-header">
-      <span class="section-num num-service">9</span>
+      <span class="section-num num-service">10</span>
       <h2>NPO業務別おすすめサービス</h2>
     </div>
 
@@ -1092,7 +1284,7 @@
   <!-- 10. NPO割引プラン -->
   <div class="section" id="sec-pricing">
     <div class="section-header">
-      <span class="section-num num-service">10</span>
+      <span class="section-num num-service">11</span>
       <h2>NPO割引プラン一覧</h2>
     </div>
 
@@ -1156,7 +1348,7 @@
   <!-- 11. 導入の進め方 -->
   <div class="section" id="sec-recommend">
     <div class="section-header">
-      <span class="section-num num-service">11</span>
+      <span class="section-num num-service">12</span>
       <h2>導入の進め方：一歩ずつ始めよう</h2>
     </div>
 
